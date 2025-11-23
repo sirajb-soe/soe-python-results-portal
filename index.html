@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Student Result Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
+        
+        /* Glassmorphism & Card Styles */
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
+        
+        .dash-card { 
+            background: white; border-radius: 20px; padding: 20px; 
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02); 
+            border: 1px solid #f1f5f9; transition: transform 0.2s;
+        }
+        .dash-card:active { transform: scale(0.98); }
+
+        /* Result Table */
+        .result-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+        .result-table th { text-align: left; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; letter-spacing: 0.05em; }
+        .result-table td { padding: 16px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+        .result-table tr:last-child td { border-bottom: none; }
+        
+        /* "AB" Highlighting */
+        .mark-ab { color: #ef4444; font-weight: 800; background: #fef2f2; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+        .mark-val { font-family: 'Inter', monospace; font-weight: 700; font-size: 1.1rem; }
+
+        .hidden-section { display: none; }
+        .fade-enter-active { animation: fadeIn 0.4s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Mobile Inputs */
+        .input-group input, .input-group select { height: 52px; font-size: 16px; border-radius: 12px; }
+        .select2-container .select2-selection--single { height: 52px !important; padding: 12px !important; border-radius: 12px !important; border: 1px solid #e2e8f0 !important; background-color: #f8fafc !important; }
+        .select2-container--default .select2-selection--single .select2-selection__arrow { top: 14px !important; }
+        
+        /* Entry Form Specifics */
+        .q-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+        .part-a-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 99px; background: #eff6ff; color: #3b82f6; font-weight: 700; display: inline-block; margin-top: 4px; }
+        .part-a-excluded { background: #f8fafc; color: #cbd5e1; }
+        .error-border { border-color: #ef4444 !important; background-color: #fff5f5; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. LOGIN SCREEN -->
+    <div id="viewLogin" class="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
+        <div class="w-full max-w-md">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-slate-900 text-white mb-6 shadow-xl shadow-slate-200">
+                    <i class="fas fa-university text-3xl"></i>
+                </div>
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Results Portal</h1>
+                <p class="text-slate-500 font-medium mt-2">Check your academic performance</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-5">
+                <div class="bg-slate-50 p-1.5 rounded-2xl flex shadow-inner">
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="loginDept" value="CSE" checked class="peer sr-only" onchange="populateUSN()">
+                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-white peer-checked:text-slate-900 peer-checked:shadow-sm transition-all">CSE</div>
+                    </label>
+                    <label class="flex-1 cursor-pointer">
+                        <input type="radio" name="loginDept" value="ISE" class="peer sr-only" onchange="populateUSN()">
+                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-white peer-checked:text-slate-900 peer-checked:shadow-sm transition-all">ISE</div>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Register Number</label>
+                    <select id="loginUSN" class="w-full" required><option value="">Select Register No</option></select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Date of Birth</label>
+                    <input type="text" id="loginDOB" placeholder="DD-MM-YYYY" inputmode="numeric"
+                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-slate-900 focus:ring-0 outline-none transition-all font-mono text-center text-lg placeholder:text-slate-300" required>
+                </div>
+
+                <button type="submit" id="btnLogin" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-[0.99] transition-all mt-4 text-lg">
+                    View Results
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. DASHBOARD -->
+    <div id="viewDashboard" class="hidden-section min-h-screen pb-10 bg-slate-50">
+        <!-- Header -->
+        <div class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-4 flex justify-between items-center shadow-sm">
+            <div>
+                <h2 class="font-bold text-slate-900 text-lg leading-tight truncate max-w-[200px]" id="dashName">Student</h2>
+                <p class="text-xs text-slate-500 font-mono mt-0.5" id="dashUSN">USN</p>
+            </div>
+            <button onclick="logout()" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
+                <i class="fas fa-power-off text-sm"></i>
+            </button>
+        </div>
+
+        <div class="max-w-3xl mx-auto px-4 py-6 space-y-6">
+            
+            <!-- 2.1 Internal Assessment Cards -->
+            <div class="grid grid-cols-2 gap-4">
+                <!-- IA 1 -->
+                <div class="dash-card border-l-4 border-l-blue-500">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase">IA - 1</span>
+                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded font-bold">SEPT</span>
+                    </div>
+                    <div class="text-3xl font-black text-slate-900 mb-1" id="resIA1">--</div>
+                    <button onclick="openSplitUp('IA1')" id="btnIA1" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-100">
+                        Split-Up
+                    </button>
+                </div>
+
+                <!-- IA 2 -->
+                <div class="dash-card border-l-4 border-l-emerald-500">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-bold text-slate-400 uppercase">IA - 2</span>
+                        <span class="bg-emerald-50 text-emerald-600 text-[10px] px-2 py-0.5 rounded font-bold">NOV</span>
+                    </div>
+                    <div class="text-3xl font-black text-slate-900 mb-1" id="resIA2">--</div>
+                    <button onclick="openSplitUp('IA2')" id="btnIA2" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-100">
+                        Split-Up
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2.2 Other Assessments Table -->
+            <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50">
+                    <h3 class="font-bold text-slate-800 text-sm">Other Components</h3>
+                </div>
+                <table class="result-table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="font-bold text-sm text-slate-700">Lab Examination</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Practical</div>
+                            </td>
+                            <td class="text-right"><span class="mark-val" id="resLab">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-bold text-sm text-slate-700">Mini Project</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Implementation</div>
+                            </td>
+                            <td class="text-right"><span class="mark-val" id="resProj">--</span></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="font-bold text-sm text-slate-700">Attendance</div>
+                                <div class="text-[10px] text-slate-400 mt-0.5">Participation</div>
+                            </td>
+                            <td class="text-right"><span class="mark-val" id="resAtt">--</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SPLIT-UP ENTRY (Mobile Friendly) -->
+    <div id="viewEntry" class="hidden-section min-h-screen pb-24 bg-white">
+        <div class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-40 px-4 py-3 flex items-center shadow-sm">
+            <button onclick="showDashboard()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center mr-3 hover:bg-slate-100">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div>
+                <h2 class="font-bold text-slate-900 text-base" id="entryTitle">IA 1 Split-Up</h2>
+                <p class="text-xs text-slate-500">Enter Question-wise Marks</p>
+            </div>
+        </div>
+
+        <div class="max-w-2xl mx-auto px-4 py-6 space-y-8">
+            <!-- Part A -->
+            <div>
+                <div class="flex justify-between items-end mb-4 px-1">
+                    <h3 class="font-bold text-slate-800 text-sm">PART A</h3>
+                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">Max 2 Each</span>
+                </div>
+                <div class="grid grid-cols-4 gap-3" id="partAContainer"></div>
+                <div class="text-right mt-2 text-xs font-bold text-slate-400">
+                    Total (Best 5): <span id="partATotal" class="text-slate-900 text-sm">0</span>
+                </div>
+            </div>
+
+            <!-- Part B -->
+            <div id="partBContainer" class="space-y-6"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
+            <div class="max-w-2xl mx-auto flex justify-between items-center">
+                <div>
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Total</div>
+                    <div class="text-2xl font-black text-blue-600 leading-none" id="runningTotal">0</div>
+                </div>
+                <button onclick="submitSplitUp()" id="btnSubmit" class="bg-slate-900 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-slate-800 active:scale-95 transition-all">
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // *** PASTE DEPLOYED WEB APP URL HERE ***
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyGJffnKTQnzUkwRIz2ohen59EZNXwC48kL151GIaV41rjGNYna5MhMgBcymOGZ-FOBrg/exec"; 
+
+        const cseStudents = [{id: "25190101", name: "AARON KENNETH DSOUZA"}, {id: "25190102", name: "ABDUL RAHMAN IZHAN"}, {id: "25190103", name: "ALWISHA SWEEDAL TAURO"}, {id: "25190104", name: "AMAN D SILVA"}, {id: "25190105", name: "AMRA FATHIMA"}, {id: "25190106", name: "ARNOLD NOAH KARYAPPA"}, {id: "25190107", name: "ASAD MOIDHIN"}, {id: "25190108", name: "ASHRITHA K"}, {id: "25190109", name: "AYMAN AHMED KOLKAR"}, {id: "25190110", name: "CHRISEL LOBO"}, {id: "25190111", name: "CYRUS SHOBITH PINTO"}, {id: "25190112", name: "DISHA N POOJARY"}, {id: "25190113", name: "GAUTAM NAVEEN RAO"}, {id: "25190114", name: "GEORGIE SHIBU GEORGE"}, {id: "25190115", name: "GILON PRINCE SERRAO"}, {id: "25190116", name: "HARDHIK C SHETTIGAR"}, {id: "25190117", name: "J SUBRAYA SHENOY"}, {id: "25190118", name: "KEORA PAIS"}, {id: "25190119", name: "MARIA FRANCY P"}, {id: "25190120", name: "MELBIN K VINOD"}, {id: "25190121", name: "MELSTON NEIL ALBUQUERQUE"}, {id: "25190122", name: "MOHAMMED SHAYAAN"}, {id: "25190123", name: "MOHAMMED ANAS ABDURRAHMAN"}, {id: "25190124", name: "MOHAMMED ARDAAN ANSAR"}, {id: "25190125", name: "MOHAMMED AYMAN"}, {id: "25190126", name: "MOHAMMED NASEEF ISMAIL"}, {id: "25190127", name: "MOHOMMED NIHAL R"}, {id: "25190128", name: "MOKSHA R ULLAL"}, {id: "25190129", name: "MUHAMMED AMAN ASSADI"}, {id: "25190130", name: "MUHAMMED HISHAM M H"}, {id: "25190131", name: "MUHAMMED NILAMUDDEEN"}, {id: "25190132", name: "NEIL ANTONY SALDANHA"}, {id: "25190133", name: "NIRANJANA S"}, {id: "25190134", name: "NISHCHITH SRINIVASA SHETTY"}, {id: "25190135", name: "NITHIN"}, {id: "25190136", name: "P CHINMAY SRINIKETHAN RAO"}, {id: "25190137", name: "POOJA P POOJARY"}, {id: "25190138", name: "PRAKRITHI"}, {id: "25190139", name: "PREEMAL SIMONA PINTO"}, {id: "25190140", name: "RAAIF ABDUL HAAMID"}, {id: "25190141", name: "REEVA LEWIS"}, {id: "25190142", name: "RISHIQ MOHIUDDIN"}, {id: "25190143", name: "SAAKSHI"}, {id: "25190144", name: "SANCIA BASTYANV DCOSTA"}, {id: "25190145", name: "SANVI.B.K"}, {id: "25190146", name: "SHAHALA SHAHZEEN"}, {id: "25190147", name: "SHAIMA SALEEM"}, {id: "25190148", name: "SHASHIDHARA"}, {id: "25190149", name: "THEJES SANTHOSH"}, {id: "25190150", name: "THRUPTHI"}, {id: "25190151", name: "VAISHNAVI"}, {id: "25190152", name: "VENKATESHWARA UD"}, {id: "25190153", name: "YATHIKSHA U S"}, {id: "25190154", name: "YUKTHA Y SUVARNA"}, {id: "25190155", name: "ZAINABA FIDHA KN"}, {id: "25190156", name: "PUNARVI J"}, {id: "25190157", name: "MANASI MAXIN"}];
+        const iseStudents = [{id: "25192101", name: "ABOOBAKKAR YASEEM"}, {id: "25192102", name: "ADITI NAYAK"}, {id: "25192103", name: "AMAL JAISON MATHEW"}, {id: "25192104", name: "ANANYA.S.C"}, {id: "25192105", name: "ANAS AHMED SHEIKH"}, {id: "25192106", name: "ANUJNA S"}, {id: "25192107", name: "ANUSH KOINGODI"}, {id: "25192108", name: "ARISTON PINTO"}, {id: "25192109", name: "ARJUN ACHARYA"}, {id: "25192110", name: "BATHIN AHMED"}, {id: "25192111", name: "BISHAN NATHAN PEREIRA"}, {id: "25192112", name: "BRAYAN DCUNHA"}, {id: "25192113", name: "DISHA NAVEEN"}, {id: "25192114", name: "E PRATHYUSH KUMAR"}, {id: "25192115", name: "FATHIMA SUHANA"}, {id: "25192116", name: "HALEEMA HIBA"}, {id: "25192117", name: "INCHARA"}, {id: "25192118", name: "JOVITA DEENA DSOUZA"}, {id: "25192119", name: "K ATUL KAMATH"}, {id: "25192120", name: "K V DHANUSH"}, {id: "25192121", name: "KEERTHAN SADANANDA MANAI"}, {id: "25192122", name: "KRITHI KOTTARI"}, {id: "25192123", name: "MINCHU SHRIHARI"}, {id: "25192124", name: "MOIDIN RAFATH"}, {id: "25192125", name: "NIREEKSHA S.B"}, {id: "25192126", name: "NISHANTH B M"}, {id: "25192127", name: "RACHEL DIAS"}, {id: "25192128", name: "RAJATH"}, {id: "25192129", name: "REYAN SAMUEL DSOUZA"}, {id: "25192130", name: "RIAN NOEL D'SOUZA"}, {id: "25192131", name: "RION EMMANUEL NORONHA"}, {id: "25192132", name: "RISHAB RITHESH SALIAN"}, {id: "25192133", name: "RISHABH"}, {id: "25192134", name: "RITHVIK SUVARNA"}, {id: "25192135", name: "ROSH JACOB ROBY"}, {id: "25192136", name: "SAHANA DSOUZA"}, {id: "25192137", name: "SAVAN DEVADIGA"}, {id: "25192138", name: "SIDDANTH S MALLYA"}, {id: "25192139", name: "SIDDHARATHA G"}, {id: "25192140", name: "SNEHA"}, {id: "25192141", name: "SOHAN KOTIAN"}, {id: "25192142", name: "TEJAS"}, {id: "25192143", name: "THEJAS JAGADEESH"}, {id: "25192144", name: "TRISHA KARUNAKAR SHETTY"}, {id: "25192145", name: "UNAIS HASSAN SAHEB"}, {id: "25192146", name: "VARSHA P V"}, {id: "25192147", name: "VARUN MATHIAS"}, {id: "25192148", name: "VIGNESH R.K"}, {id: "25192149", name: "VINISHA MARIA MONTHEIRO"}, {id: "25192150", name: "WAQQAS HEJAZI"}, {id: "25192151", name: "ANAM MYMOONA"}];
+
+        let session = { dept: '', usn: '', name: '', activeIA: '', splitUpData: null };
+
+        $(document).ready(function() {
+            $('#loginUSN').select2({ placeholder: "Select Register No" });
+            populateUSN();
+        });
+
+        function populateUSN() {
+            const dept = $('input[name="loginDept"]:checked').val();
+            const list = dept === 'CSE' ? cseStudents : iseStudents;
+            $('#loginUSN').empty().append('<option value="">Select Register No</option>');
+            list.forEach(s => $('#loginUSN').append(new Option(`${s.id} - ${s.name}`, s.id)));
+            $('#loginUSN').trigger('change');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            if(!GOOGLE_SCRIPT_URL) { alert("Configure Script URL!"); return; }
+            
+            const usn = $('#loginUSN').val();
+            const dob = $('#loginDOB').val();
+            const dept = $('input[name="loginDept"]:checked').val();
+
+            if(!usn || !dob) { alert("Please fill all fields"); return; }
+
+            $('#btnLogin').html('<i class="fas fa-spinner fa-spin"></i> Verifying...').prop('disabled', true);
+
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=login&usn=${usn}&dob=${dob}&dept=${dept}`);
+                const data = await res.json();
+
+                if(data.status === 'error') {
+                    alert(data.message);
+                    $('#btnLogin').text('View Results').prop('disabled', false);
+                    return;
+                }
+
+                session = { dept, usn, name: data.studentName, splitUpData: data.splitUpData };
+
+                // Update Dashboard
+                $('#dashName').text(session.name);
+                $('#dashUSN').text(session.usn);
+                
+                // Format Marks with "AB" Logic
+                const formatMark = (val) => {
+                    if(val === 'AB' || val === 'ab') return `<span class="mark-ab">AB</span>`;
+                    return val || "--";
+                };
+
+                $('#resIA1').html(formatMark(data.results.ia.IA1));
+                $('#resIA2').html(formatMark(data.results.ia.IA2));
+                
+                $('#resLab').html(formatMark(data.results.others.Lab));
+                $('#resProj').html(formatMark(data.results.others.Project));
+                $('#resAtt').html(formatMark(data.results.others.Attendance));
+
+                updateDashButtons();
+
+                $('#viewLogin').hide();
+                $('#viewDashboard').show().addClass('fade-enter-active');
+
+            } catch (err) {
+                console.error(err);
+                alert("Connection Error. Please retry.");
+            } finally {
+                $('#btnLogin').text('View Results').prop('disabled', false);
+            }
+        }
+
+        function updateDashButtons() {
+            const updateBtn = (id, type) => {
+                const hasData = session.splitUpData && session.splitUpData[type];
+                const btn = $(id);
+                if(hasData) {
+                    btn.text('Edit Split-Up').removeClass('bg-slate-50').addClass('bg-emerald-50 text-emerald-700 border-emerald-200');
+                } else {
+                    btn.text('Enter Split-Up').removeClass('bg-emerald-50 text-emerald-700 border-emerald-200').addClass('bg-slate-50');
+                }
+            };
+            updateBtn('#btnIA1', 'IA1');
+            updateBtn('#btnIA2', 'IA2');
+        }
+
+        function openSplitUp(iaType) {
+            session.activeIA = iaType;
+            $('#entryTitle').text(`${iaType} Split-Up`);
+            $('#viewDashboard').hide();
+            $('#viewEntry').show();
+            window.scrollTo(0,0);
+            renderForm();
+
+            if(session.splitUpData && session.splitUpData[iaType]) {
+                const data = session.splitUpData[iaType];
+                for (const [key, val] of Object.entries(data)) {
+                    const input = document.querySelector(`input[data-key="${key}"]`);
+                    if(input) input.value = val;
+                }
+                updateCalc();
+            } else {
+                updateCalc(); 
+            }
+        }
+
+        function showDashboard() { $('#viewEntry').hide(); $('#viewDashboard').show(); }
+
+        function renderForm() {
+            $('#partAContainer').empty();
+            for(let i=1; i<=7; i++) {
+                $('#partAContainer').append(`
+                    <div class="text-center">
+                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Q${i}</label>
+                        <input type="number" inputmode="decimal" min="0" max="2" step="0.5" class="w-full rounded-xl border-slate-200 text-center font-bold text-lg text-slate-800 focus:border-slate-900 focus:ring-0 outline-none bg-slate-50/50"
+                        oninput="validateInput(this, 2)" data-key="Q${i}" data-section="A">
+                        <span id="badge-Q${i}" class="part-a-badge hidden">Included</span>
+                    </div>`);
+            }
+
+            const subs = session.activeIA === 'IA1' ? ['a(i)', 'a(ii)', 'b(i)', 'b(ii)'] : ['a', 'b'];
+            const max = session.activeIA === 'IA1' ? 5 : 10;
+
+            const renderQ = (q) => {
+                let h = `<div class="q-card"><div class="mb-4 font-bold text-lg text-slate-800 border-b border-slate-100 pb-2">${q}</div><div class="grid gap-4">`;
+                subs.forEach(s => {
+                    h += `<div class="flex items-center justify-between">
+                        <span class="w-16 text-sm font-bold text-slate-500 font-mono">${q}${s}</span>
+                        <input type="number" inputmode="decimal" min="0" max="${max}" step="0.5" class="w-24 h-12 rounded-xl border-slate-200 text-right font-bold text-lg text-slate-800 focus:border-slate-900 focus:ring-0 outline-none p-2 bg-slate-50/50"
+                        oninput="validateInput(this, ${max})" data-key="${q}${s}" data-group="${q}">
+                    </div>`;
+                });
+                return h + `</div></div>`;
+            };
+
+            // Clean Layout without "Module" Headers
+            let html = renderQ('Q8') + renderQ('Q9');
+            html += '<div class="h-4"></div>'; // Spacer
+            html += renderQ('Q10') + renderQ('Q11');
+            $('#partBContainer').html(html);
+        }
+
+        function validateInput(input, max) {
+            let val = parseFloat(input.value);
+            if(val > max) { input.value = max; input.classList.add('error-border'); setTimeout(() => input.classList.remove('error-border'), 500); }
+            if(val < 0) input.value = 0;
+            updateCalc();
+        }
+
+        function getGroupTotal(group) {
+            let sum = 0;
+            document.querySelectorAll(`input[data-group="${group}"]`).forEach(inp => sum += parseFloat(inp.value) || 0);
+            return sum;
+        }
+
+        function updateCalc() {
+            let aVals = [];
+            document.querySelectorAll(`input[data-section="A"]`).forEach(inp => aVals.push({id: inp.dataset.key, val: parseFloat(inp.value) || 0}));
+            aVals.sort((a,b)=>b.val - a.val);
+            let aSum = 0; let topIds = [];
+            for(let i=0; i<5 && i<aVals.length; i++) { aSum += aVals[i].val; topIds.push(aVals[i].id); }
+            
+            document.querySelectorAll(`input[data-section="A"]`).forEach(inp => {
+                const badge = document.getElementById(`badge-${inp.dataset.key}`);
+                const input = inp;
+                if(inp.value !== "" && topIds.includes(inp.dataset.key)) {
+                    badge.classList.remove('hidden');
+                    input.classList.add('bg-blue-50/30');
+                } else {
+                    badge.classList.add('hidden');
+                    input.classList.remove('bg-blue-50/30');
+                }
+            });
+            $('#partATotal').text(aSum);
+
+            const q8 = getGroupTotal('Q8'), q9 = getGroupTotal('Q9');
+            const q10 = getGroupTotal('Q10'), q11 = getGroupTotal('Q11');
+            const total = aSum + Math.max(q8, q9) + Math.max(q10, q11);
+            $('#runningTotal').text(total);
+        }
+
+        async function submitSplitUp() {
+            const btn = $('#btnSubmit');
+            btn.html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
+
+            const payload = {
+                action: 'submit',
+                config: { dept: session.dept, ia: session.activeIA },
+                student: { usn: session.usn, name: session.name, sem: '1', code: '25ENUEC158' },
+                calculatedTotal: $('#runningTotal').text(),
+                marks: {}
+            };
+
+            document.querySelectorAll('input[data-key]').forEach(inp => {
+                payload.marks[inp.dataset.key] = inp.value;
+            });
+
+            try {
+                await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST', mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert("Saved Successfully!");
+                if(!session.splitUpData) session.splitUpData = {};
+                session.splitUpData[session.activeIA] = payload.marks;
+                updateDashButtons();
+                showDashboard();
+            } catch(e) {
+                alert("Error saving.");
+            } finally {
+                btn.text('Save').prop('disabled', false);
+            }
+        }
+        function logout() { location.reload(); }
+    </script>
+</body>
+</html>
