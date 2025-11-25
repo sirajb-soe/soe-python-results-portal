@@ -15,169 +15,135 @@
         
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
         
-        /* Glassmorphism & Card Styles */
-        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
-        
-        .dash-card { 
-            background: white; border-radius: 20px; padding: 20px; 
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02); 
-            border: 1px solid #f1f5f9; transition: transform 0.2s;
-        }
+        /* Animations */
+        .fade-enter-active { animation: fadeIn 0.3s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .hidden-section { display: none; }
+
+        /* Glass & Cards */
+        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
+        .dash-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); border: 1px solid #f1f5f9; transition: transform 0.2s; }
         .dash-card:active { transform: scale(0.98); }
 
-        /* Result Table */
-        .result-table { width: 100%; border-collapse: separate; border-spacing: 0; }
-        .result-table th { text-align: left; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; padding: 12px 16px; border-bottom: 1px solid #e2e8f0; letter-spacing: 0.05em; }
-        .result-table td { padding: 16px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
-        .result-table tr:last-child td { border-bottom: none; }
-        
-        /* "AB" Highlighting */
-        .mark-ab { color: #ef4444; font-weight: 800; background: #fef2f2; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
-        .mark-val { font-family: 'Inter', monospace; font-weight: 700; font-size: 1.1rem; }
+        /* Inputs */
+        .input-bubble {
+            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px;
+            text-align: center; font-weight: 700; font-size: 1.1rem; color: #334155;
+            transition: all 0.2s; outline: none;
+        }
+        .input-bubble:focus { background: white; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .part-b-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
+        .part-b-row:last-child { border-bottom: none; }
 
-        .hidden-section { display: none; }
-        .fade-enter-active { animation: fadeIn 0.4s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Mobile Inputs */
-        .input-group input, .input-group select { height: 52px; font-size: 16px; border-radius: 12px; }
+        /* Select2 Customization */
         .select2-container .select2-selection--single { height: 52px !important; padding: 12px !important; border-radius: 12px !important; border: 1px solid #e2e8f0 !important; background-color: #f8fafc !important; }
         .select2-container--default .select2-selection--single .select2-selection__arrow { top: 14px !important; }
+
+        /* Highlighting */
+        .mark-ab { color: #ef4444; background: #fef2f2; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.9em; }
+        .error-border { border-color: #ef4444 !important; background-color: #fff5f5 !important; }
         
-        /* Entry Form Specifics */
-        .q-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
-        .part-a-badge { font-size: 0.65rem; padding: 2px 8px; border-radius: 99px; background: #eff6ff; color: #3b82f6; font-weight: 700; display: inline-block; margin-top: 4px; }
-        .part-a-excluded { background: #f8fafc; color: #cbd5e1; }
-        .error-border { border-color: #ef4444 !important; background-color: #fff5f5; }
+        /* Detailed Review Styles */
+        .review-group { background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+        .review-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; color: #1e293b; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
+        .review-sub-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; padding: 2px 0; }
+        .review-sub-val { font-family: monospace; font-weight: 600; color: #334155; }
+        .review-best-badge { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
     </style>
 </head>
-<body>
+<body class="bg-slate-50">
 
     <!-- 1. LOGIN SCREEN -->
-    <div id="viewLogin" class="min-h-screen flex flex-col items-center justify-center p-6 bg-white">
+    <div id="viewLogin" class="min-h-screen flex flex-col items-center justify-center p-6">
         <div class="w-full max-w-md">
             <div class="text-center mb-10">
                 <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-slate-900 text-white mb-6 shadow-xl shadow-slate-200">
                     <i class="fas fa-university text-3xl"></i>
                 </div>
                 <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Results Portal</h1>
-                <p class="text-slate-500 font-medium mt-2">Check your academic performance</p>
+                <p class="text-slate-500 font-medium mt-2">Check results & enter marks</p>
             </div>
 
             <form onsubmit="handleLogin(event)" class="space-y-5">
-                <div class="bg-slate-50 p-1.5 rounded-2xl flex shadow-inner">
+                <div class="bg-white p-1.5 rounded-2xl flex shadow-sm border border-slate-200">
                     <label class="flex-1 cursor-pointer">
                         <input type="radio" name="loginDept" value="CSE" checked class="peer sr-only" onchange="populateUSN()">
-                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-white peer-checked:text-slate-900 peer-checked:shadow-sm transition-all">CSE</div>
+                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-slate-100 peer-checked:text-slate-900 transition-all">CSE</div>
                     </label>
                     <label class="flex-1 cursor-pointer">
                         <input type="radio" name="loginDept" value="ISE" class="peer sr-only" onchange="populateUSN()">
-                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-white peer-checked:text-slate-900 peer-checked:shadow-sm transition-all">ISE</div>
+                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-slate-100 peer-checked:text-slate-900 transition-all">ISE</div>
                     </label>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Register Number</label>
-                    <select id="loginUSN" class="w-full" required><option value="">Select Register No</option></select>
+                    <select id="loginUSN" class="w-full" required disabled><option value="">Select Department First...</option></select>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 ml-1">Date of Birth</label>
-                    <input type="text" id="loginDOB" placeholder="DD-MM-YYYY" inputmode="numeric"
-                        class="w-full px-4 py-3 rounded-xl border border-slate-200 bg-white focus:border-slate-900 focus:ring-0 outline-none transition-all font-mono text-center text-lg placeholder:text-slate-300" required>
+                    <input type="text" id="loginDOB" placeholder="Date of Birth (DD-MM-YYYY)" inputmode="numeric"
+                        class="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-slate-900 focus:ring-0 outline-none transition-all font-mono text-center text-lg placeholder:text-slate-300" required>
                 </div>
 
-                <button type="submit" id="btnLogin" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg shadow-slate-300 hover:bg-slate-800 active:scale-[0.99] transition-all mt-4 text-lg">
-                    View Results
+                <button type="submit" id="btnLogin" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-800 active:scale-[0.99] transition-all mt-4 text-lg">
+                    Login
                 </button>
             </form>
         </div>
     </div>
 
     <!-- 2. DASHBOARD -->
-    <div id="viewDashboard" class="hidden-section min-h-screen pb-10 bg-slate-50">
-        <!-- Header -->
+    <div id="viewDashboard" class="hidden-section min-h-screen pb-10">
         <div class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-4 flex justify-between items-center shadow-sm">
             <div>
                 <h2 class="font-bold text-slate-900 text-lg leading-tight truncate max-w-[200px]" id="dashName">Student</h2>
                 <p class="text-xs text-slate-500 font-mono mt-0.5" id="dashUSN">USN</p>
             </div>
-            <button onclick="logout()" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors">
-                <i class="fas fa-power-off text-sm"></i>
-            </button>
+            <div class="flex items-center gap-2">
+                <button onclick="handleLogin(null, true)" class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors" title="Refresh Data">
+                    <i class="fas fa-sync-alt text-xs"></i>
+                </button>
+                <button onclick="logout()" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors" title="Logout">
+                    <i class="fas fa-power-off text-sm"></i>
+                </button>
+            </div>
         </div>
 
         <div class="max-w-3xl mx-auto px-4 py-6 space-y-6">
-            
-            <!-- 2.1 Internal Assessment Cards -->
+            <!-- IA Cards -->
             <div class="grid grid-cols-2 gap-4">
-                <!-- IA 1 -->
                 <div class="dash-card border-l-4 border-l-blue-500">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="text-xs font-bold text-slate-400 uppercase">IA - 1</span>
-                        <span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded font-bold">SEPT</span>
-                    </div>
+                    <div class="flex justify-between mb-3"><span class="text-xs font-bold text-slate-400">IA - 1</span><span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded font-bold">SEPT</span></div>
                     <div class="text-3xl font-black text-slate-900 mb-1" id="resIA1">--</div>
-                    <button onclick="openSplitUp('IA1')" id="btnIA1" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-100">
-                        Split-Up
-                    </button>
+                    <button onclick="openSplitUp('IA1')" id="btnIA1" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">Split-Up</button>
                 </div>
-
-                <!-- IA 2 -->
                 <div class="dash-card border-l-4 border-l-emerald-500">
-                    <div class="flex justify-between items-start mb-3">
-                        <span class="text-xs font-bold text-slate-400 uppercase">IA - 2</span>
-                        <span class="bg-emerald-50 text-emerald-600 text-[10px] px-2 py-0.5 rounded font-bold">NOV</span>
-                    </div>
+                    <div class="flex justify-between mb-3"><span class="text-xs font-bold text-slate-400">IA - 2</span><span class="bg-emerald-50 text-emerald-600 text-[10px] px-2 py-0.5 rounded font-bold">NOV</span></div>
                     <div class="text-3xl font-black text-slate-900 mb-1" id="resIA2">--</div>
-                    <button onclick="openSplitUp('IA2')" id="btnIA2" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-100">
-                        Split-Up
-                    </button>
+                    <button onclick="openSplitUp('IA2')" id="btnIA2" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">Split-Up</button>
                 </div>
             </div>
 
-            <!-- 2.2 Other Assessments Table -->
+            <!-- Results Table -->
             <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50">
-                    <h3 class="font-bold text-slate-800 text-sm">Other Components</h3>
+                <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50"><h3 class="font-bold text-slate-800 text-sm">Other Components</h3></div>
+                <div class="p-5 space-y-4">
+                    <div class="flex justify-between items-center"><span class="text-sm font-medium text-slate-600">Lab Exam</span><span class="font-mono font-bold text-slate-900" id="resLab">--</span></div>
+                    <div class="flex justify-between items-center"><span class="text-sm font-medium text-slate-600">Mini Project</span><span class="font-mono font-bold text-slate-900" id="resProj">--</span></div>
+                    <div class="flex justify-between items-center"><span class="text-sm font-medium text-slate-600">Attendance</span><span class="font-mono font-bold text-slate-900" id="resAtt">--</span></div>
                 </div>
-                <table class="result-table">
-                    <tbody>
-                        <tr>
-                            <td>
-                                <div class="font-bold text-sm text-slate-700">Lab Examination</div>
-                                <div class="text-[10px] text-slate-400 mt-0.5">Practical</div>
-                            </td>
-                            <td class="text-right"><span class="mark-val" id="resLab">--</span></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-bold text-sm text-slate-700">Mini Project</div>
-                                <div class="text-[10px] text-slate-400 mt-0.5">Implementation</div>
-                            </td>
-                            <td class="text-right"><span class="mark-val" id="resProj">--</span></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="font-bold text-sm text-slate-700">Attendance</div>
-                                <div class="text-[10px] text-slate-400 mt-0.5">Participation</div>
-                            </td>
-                            <td class="text-right"><span class="mark-val" id="resAtt">--</span></td>
-                        </tr>
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
 
-    <!-- 3. SPLIT-UP ENTRY (Mobile Friendly) -->
-    <div id="viewEntry" class="hidden-section min-h-screen pb-24 bg-white">
+    <!-- 3. ENTRY FORM -->
+    <div id="viewEntry" class="hidden-section min-h-screen bg-white pb-24">
         <div class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-40 px-4 py-3 flex items-center shadow-sm">
             <button onclick="showDashboard()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center mr-3 hover:bg-slate-100">
                 <i class="fas fa-chevron-left"></i>
             </button>
             <div>
-                <h2 class="font-bold text-slate-900 text-base" id="entryTitle">IA 1 Split-Up</h2>
+                <h2 class="font-bold text-slate-900 text-base" id="entryTitle">IA Split-Up</h2>
                 <p class="text-xs text-slate-500">Enter Question-wise Marks</p>
             </div>
         </div>
@@ -186,8 +152,8 @@
             <!-- Part A -->
             <div>
                 <div class="flex justify-between items-end mb-4 px-1">
-                    <h3 class="font-bold text-slate-800 text-sm">PART A</h3>
-                    <span class="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-1 rounded-lg">Max 2 Each</span>
+                    <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide">PART A</h3>
+                    <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">Max 2 Each</span>
                 </div>
                 <div class="grid grid-cols-4 gap-3" id="partAContainer"></div>
                 <div class="text-right mt-2 text-xs font-bold text-slate-400">
@@ -199,16 +165,47 @@
             <div id="partBContainer" class="space-y-6"></div>
         </div>
 
-        <!-- Footer -->
+        <!-- Action Footer -->
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
-            <div class="max-w-2xl mx-auto flex justify-between items-center">
+            <div class="max-w-2xl mx-auto flex justify-between items-center gap-4">
                 <div>
-                    <div class="text-[10px] uppercase font-bold text-slate-400">Total</div>
+                    <div class="text-[10px] uppercase font-bold text-slate-400">Entry Total</div>
                     <div class="text-2xl font-black text-blue-600 leading-none" id="runningTotal">0</div>
                 </div>
-                <button onclick="submitSplitUp()" id="btnSubmit" class="bg-slate-900 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:bg-slate-800 active:scale-95 transition-all">
-                    Save
+                <button onclick="openReview()" class="bg-slate-900 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg hover:bg-slate-800 active:scale-95 transition-all flex-1 max-w-[160px]">
+                    Review
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. DETAILED REVIEW PAGE -->
+    <div id="viewReview" class="hidden-section min-h-screen bg-slate-50 pb-24">
+        <div class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-4 flex items-center shadow-sm">
+            <button onclick="closeReview()" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mr-3 hover:bg-slate-200">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <div>
+                <h2 class="font-bold text-slate-900 text-lg">Confirm Marks</h2>
+                <p class="text-xs text-slate-500">Verify details before saving</p>
+            </div>
+        </div>
+
+        <div class="max-w-2xl mx-auto px-4 py-6 space-y-6">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-400 uppercase mb-2">Grand Total Calculated</p>
+                <p class="text-5xl font-black text-blue-600" id="reviewTotal">0</p>
+                <p class="text-xs text-slate-400 mt-2 font-medium">Part A (Best 5) + Part B (Best of Sets)</p>
+            </div>
+
+            <div id="reviewContent" class="space-y-4"></div>
+        </div>
+
+        <!-- Footer -->
+        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
+            <div class="max-w-2xl mx-auto flex gap-3">
+                <button onclick="closeReview()" class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Edit</button>
+                <button onclick="submitSplitUp()" id="btnFinalSubmit" class="flex-[2] py-3.5 rounded-xl font-bold text-white bg-blue-600 shadow-lg hover:bg-blue-700 transition-colors">Confirm & Save</button>
             </div>
         </div>
     </div>
@@ -217,76 +214,111 @@
         // *** PASTE DEPLOYED WEB APP URL HERE ***
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby10M5zo1Ol5NNCry5_drTE67Hy9trxXf8xxmZWU98dJzEEdGhDuZJqxdcyT2pEbaCX4Q/exec"; 
 
-        const cseStudents = [{id: "25190101", name: "AARON KENNETH DSOUZA"}, {id: "25190102", name: "ABDUL RAHMAN IZHAN"}, {id: "25190103", name: "ALWISHA SWEEDAL TAURO"}, {id: "25190104", name: "AMAN D SILVA"}, {id: "25190105", name: "AMRA FATHIMA"}, {id: "25190106", name: "ARNOLD NOAH KARYAPPA"}, {id: "25190107", name: "ASAD MOIDHIN"}, {id: "25190108", name: "ASHRITHA K"}, {id: "25190109", name: "AYMAN AHMED KOLKAR"}, {id: "25190110", name: "CHRISEL LOBO"}, {id: "25190111", name: "CYRUS SHOBITH PINTO"}, {id: "25190112", name: "DISHA N POOJARY"}, {id: "25190113", name: "GAUTAM NAVEEN RAO"}, {id: "25190114", name: "GEORGIE SHIBU GEORGE"}, {id: "25190115", name: "GILON PRINCE SERRAO"}, {id: "25190116", name: "HARDHIK C SHETTIGAR"}, {id: "25190117", name: "J SUBRAYA SHENOY"}, {id: "25190118", name: "KEORA PAIS"}, {id: "25190119", name: "MARIA FRANCY P"}, {id: "25190120", name: "MELBIN K VINOD"}, {id: "25190121", name: "MELSTON NEIL ALBUQUERQUE"}, {id: "25190122", name: "MOHAMMED SHAYAAN"}, {id: "25190123", name: "MOHAMMED ANAS ABDURRAHMAN"}, {id: "25190124", name: "MOHAMMED ARDAAN ANSAR"}, {id: "25190125", name: "MOHAMMED AYMAN"}, {id: "25190126", name: "MOHAMMED NASEEF ISMAIL"}, {id: "25190127", name: "MOHOMMED NIHAL R"}, {id: "25190128", name: "MOKSHA R ULLAL"}, {id: "25190129", name: "MUHAMMED AMAN ASSADI"}, {id: "25190130", name: "MUHAMMED HISHAM M H"}, {id: "25190131", name: "MUHAMMED NILAMUDDEEN"}, {id: "25190132", name: "NEIL ANTONY SALDANHA"}, {id: "25190133", name: "NIRANJANA S"}, {id: "25190134", name: "NISHCHITH SRINIVASA SHETTY"}, {id: "25190135", name: "NITHIN"}, {id: "25190136", name: "P CHINMAY SRINIKETHAN RAO"}, {id: "25190137", name: "POOJA P POOJARY"}, {id: "25190138", name: "PRAKRITHI"}, {id: "25190139", name: "PREEMAL SIMONA PINTO"}, {id: "25190140", name: "RAAIF ABDUL HAAMID"}, {id: "25190141", name: "REEVA LEWIS"}, {id: "25190142", name: "RISHIQ MOHIUDDIN"}, {id: "25190143", name: "SAAKSHI"}, {id: "25190144", name: "SANCIA BASTYANV DCOSTA"}, {id: "25190145", name: "SANVI.B.K"}, {id: "25190146", name: "SHAHALA SHAHZEEN"}, {id: "25190147", name: "SHAIMA SALEEM"}, {id: "25190148", name: "SHASHIDHARA"}, {id: "25190149", name: "THEJES SANTHOSH"}, {id: "25190150", name: "THRUPTHI"}, {id: "25190151", name: "VAISHNAVI"}, {id: "25190152", name: "VENKATESHWARA UD"}, {id: "25190153", name: "YATHIKSHA U S"}, {id: "25190154", name: "YUKTHA Y SUVARNA"}, {id: "25190155", name: "ZAINABA FIDHA KN"}, {id: "25190156", name: "PUNARVI J"}, {id: "25190157", name: "MANASI MAXIN"}];
-        const iseStudents = [{id: "25192101", name: "ABOOBAKKAR YASEEM"}, {id: "25192102", name: "ADITI NAYAK"}, {id: "25192103", name: "AMAL JAISON MATHEW"}, {id: "25192104", name: "ANANYA.S.C"}, {id: "25192105", name: "ANAS AHMED SHEIKH"}, {id: "25192106", name: "ANUJNA S"}, {id: "25192107", name: "ANUSH KOINGODI"}, {id: "25192108", name: "ARISTON PINTO"}, {id: "25192109", name: "ARJUN ACHARYA"}, {id: "25192110", name: "BATHIN AHMED"}, {id: "25192111", name: "BISHAN NATHAN PEREIRA"}, {id: "25192112", name: "BRAYAN DCUNHA"}, {id: "25192113", name: "DISHA NAVEEN"}, {id: "25192114", name: "E PRATHYUSH KUMAR"}, {id: "25192115", name: "FATHIMA SUHANA"}, {id: "25192116", name: "HALEEMA HIBA"}, {id: "25192117", name: "INCHARA"}, {id: "25192118", name: "JOVITA DEENA DSOUZA"}, {id: "25192119", name: "K ATUL KAMATH"}, {id: "25192120", name: "K V DHANUSH"}, {id: "25192121", name: "KEERTHAN SADANANDA MANAI"}, {id: "25192122", name: "KRITHI KOTTARI"}, {id: "25192123", name: "MINCHU SHRIHARI"}, {id: "25192124", name: "MOIDIN RAFATH"}, {id: "25192125", name: "NIREEKSHA S.B"}, {id: "25192126", name: "NISHANTH B M"}, {id: "25192127", name: "RACHEL DIAS"}, {id: "25192128", name: "RAJATH"}, {id: "25192129", name: "REYAN SAMUEL DSOUZA"}, {id: "25192130", name: "RIAN NOEL D'SOUZA"}, {id: "25192131", name: "RION EMMANUEL NORONHA"}, {id: "25192132", name: "RISHAB RITHESH SALIAN"}, {id: "25192133", name: "RISHABH"}, {id: "25192134", name: "RITHVIK SUVARNA"}, {id: "25192135", name: "ROSH JACOB ROBY"}, {id: "25192136", name: "SAHANA DSOUZA"}, {id: "25192137", name: "SAVAN DEVADIGA"}, {id: "25192138", name: "SIDDANTH S MALLYA"}, {id: "25192139", name: "SIDDHARATHA G"}, {id: "25192140", name: "SNEHA"}, {id: "25192141", name: "SOHAN KOTIAN"}, {id: "25192142", name: "TEJAS"}, {id: "25192143", name: "THEJAS JAGADEESH"}, {id: "25192144", name: "TRISHA KARUNAKAR SHETTY"}, {id: "25192145", name: "UNAIS HASSAN SAHEB"}, {id: "25192146", name: "VARSHA P V"}, {id: "25192147", name: "VARUN MATHIAS"}, {id: "25192148", name: "VIGNESH R.K"}, {id: "25192149", name: "VINISHA MARIA MONTHEIRO"}, {id: "25192150", name: "WAQQAS HEJAZI"}, {id: "25192151", name: "ANAM MYMOONA"}];
-
-        let session = { dept: '', usn: '', name: '', activeIA: '', splitUpData: null };
+        let session = { dept: '', usn: '', name: '', dob: '', activeIA: '', splitUpData: null, tempMarks: {} };
 
         $(document).ready(function() {
             $('#loginUSN').select2({ placeholder: "Select Register No" });
-            populateUSN();
+            
+            // 1. CHECK FOR SAVED SESSION
+            const savedSession = localStorage.getItem('studentSession');
+            if (savedSession) {
+                try {
+                    const parsed = JSON.parse(savedSession);
+                    session = parsed;
+                    // Restore UI State immediately
+                    $('#loginDept').val(session.dept); // Visual only
+                    restoreDashboard();
+                    // Background refresh
+                    handleLogin(null, true);
+                } catch(e) { localStorage.removeItem('studentSession'); populateUSN(); }
+            } else {
+                populateUSN();
+            }
         });
 
-        function populateUSN() {
-            const dept = $('input[name="loginDept"]:checked').val();
-            const list = dept === 'CSE' ? cseStudents : iseStudents;
-            $('#loginUSN').empty().append('<option value="">Select Register No</option>');
-            list.forEach(s => $('#loginUSN').append(new Option(`${s.id} - ${s.name}`, s.id)));
-            $('#loginUSN').trigger('change');
+        function restoreDashboard() {
+            $('#dashName').text(session.name);
+            $('#dashUSN').text(session.usn);
+            if(session.officialMarks) renderDashboardMarks(session.officialMarks);
+            updateDashButtons();
+            $('#viewLogin').hide();
+            $('#viewDashboard').show().addClass('fade-enter-active');
         }
 
-        async function handleLogin(e) {
-            e.preventDefault();
+        async function populateUSN() {
+            if(!GOOGLE_SCRIPT_URL) return;
+            const dept = $('input[name="loginDept"]:checked').val();
+            const $select = $('#loginUSN');
+            $select.empty().append('<option value="">Loading...</option>').prop('disabled', true);
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getStudentList&dept=${dept}`);
+                const data = await res.json();
+                $select.empty().append('<option value="">Select Register No</option>');
+                if (data.status === 'success' && data.students) {
+                    data.students.forEach(s => $select.append(new Option(`${s.id} - ${s.name}`, s.id)));
+                    $select.prop('disabled', false);
+                } else { $select.append('<option value="">Error loading list</option>'); }
+            } catch (e) { console.error("Fetch error", e); $select.empty().append('<option value="">Connection Failed</option>'); }
+            $select.trigger('change');
+        }
+
+        async function handleLogin(e, isRefresh = false) {
+            if(e) e.preventDefault();
             if(!GOOGLE_SCRIPT_URL) { alert("Configure Script URL!"); return; }
             
-            const usn = $('#loginUSN').val();
-            const dob = $('#loginDOB').val();
-            const dept = $('input[name="loginDept"]:checked').val();
+            const usn = isRefresh ? session.usn : $('#loginUSN').val();
+            const dob = isRefresh ? session.dob : $('#loginDOB').val();
+            const dept = isRefresh ? session.dept : $('input[name="loginDept"]:checked').val();
 
             if(!usn || !dob) { alert("Please fill all fields"); return; }
-
-            $('#btnLogin').html('<i class="fas fa-spinner fa-spin"></i> Verifying...').prop('disabled', true);
+            if(!isRefresh) $('#btnLogin').html('<i class="fas fa-spinner fa-spin"></i> Authenticating...').prop('disabled', true);
 
             try {
                 const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=login&usn=${usn}&dob=${dob}&dept=${dept}`);
                 const data = await res.json();
 
                 if(data.status === 'error') {
-                    alert(data.message);
-                    $('#btnLogin').text('View Results').prop('disabled', false);
+                    if(isRefresh) { localStorage.removeItem('studentSession'); location.reload(); }
+                    else { alert(data.message); $('#btnLogin').text('View Results').prop('disabled', false); }
                     return;
                 }
 
-                session = { dept, usn, name: data.studentName, splitUpData: data.splitUpData };
+                // Update Session
+                session.dept = dept; session.usn = usn; session.dob = dob; session.name = data.studentName;
+                session.splitUpData = data.splitUpData;
+                session.officialMarks = data.results;
+                session.tempMarks = session.tempMarks || {}; // Keep local edits
+                
+                localStorage.setItem('studentSession', JSON.stringify(session));
 
-                // Update Dashboard
                 $('#dashName').text(session.name);
                 $('#dashUSN').text(session.usn);
-                
-                // Format Marks with "AB" Logic
-                const formatMark = (val) => {
-                    if(val === 'AB' || val === 'ab') return `<span class="mark-ab">AB</span>`;
-                    return val || "--";
-                };
-
-                $('#resIA1').html(formatMark(data.results.ia.IA1));
-                $('#resIA2').html(formatMark(data.results.ia.IA2));
-                
-                $('#resLab').html(formatMark(data.results.others.Lab));
-                $('#resProj').html(formatMark(data.results.others.Project));
-                $('#resAtt').html(formatMark(data.results.others.Attendance));
-
+                renderDashboardMarks(data.results);
                 updateDashButtons();
 
-                $('#viewLogin').hide();
-                $('#viewDashboard').show().addClass('fade-enter-active');
+                if(!isRefresh) {
+                    $('#viewLogin').hide();
+                    $('#viewDashboard').show().addClass('fade-enter-active');
+                }
 
             } catch (err) {
                 console.error(err);
-                alert("Connection Error. Please retry.");
+                if(!isRefresh) alert("Connection Error.");
             } finally {
-                $('#btnLogin').text('View Results').prop('disabled', false);
+                if(!isRefresh) $('#btnLogin').text('View Results').prop('disabled', false);
             }
+        }
+
+        function renderDashboardMarks(results) {
+            const formatMark = (val) => {
+                if(val === 'AB' || val === 'ab') return `<span class="mark-ab">AB</span>`;
+                return val || "--";
+            };
+            $('#resIA1').html(formatMark(results.ia.IA1));
+            $('#resIA2').html(formatMark(results.ia.IA2));
+            $('#resLab').html(formatMark(results.others.Lab));
+            $('#resProj').html(formatMark(results.others.Project));
+            $('#resAtt').html(formatMark(results.others.Attendance));
         }
 
         function updateDashButtons() {
@@ -311,16 +343,20 @@
             window.scrollTo(0,0);
             renderForm();
 
-            if(session.splitUpData && session.splitUpData[iaType]) {
-                const data = session.splitUpData[iaType];
-                for (const [key, val] of Object.entries(data)) {
-                    const input = document.querySelector(`input[data-key="${key}"]`);
-                    if(input) input.value = val;
+            // 1. Load Saved Data
+            const saved = session.splitUpData && session.splitUpData[iaType] ? session.splitUpData[iaType] : {};
+            // 2. Load Unsaved Local Edits (Override Saved)
+            const temp = session.tempMarks && session.tempMarks[iaType] ? session.tempMarks[iaType] : {};
+            const marksToLoad = { ...saved, ...temp };
+
+            for (const [key, val] of Object.entries(marksToLoad)) {
+                const input = document.querySelector(`input[data-key="${key}"]`);
+                if(input) {
+                    input.value = val;
+                    validateInput(input, input.max, false);
                 }
-                updateCalc();
-            } else {
-                updateCalc(); 
             }
+            updateCalc();
         }
 
         function showDashboard() { $('#viewEntry').hide(); $('#viewDashboard').show(); }
@@ -329,11 +365,11 @@
             $('#partAContainer').empty();
             for(let i=1; i<=7; i++) {
                 $('#partAContainer').append(`
-                    <div class="text-center">
-                        <label class="block text-[10px] font-bold text-slate-400 mb-1 uppercase">Q${i}</label>
-                        <input type="number" inputmode="decimal" min="0" max="2" step="0.5" class="w-full rounded-xl border-slate-200 text-center font-bold text-lg text-slate-800 focus:border-slate-900 focus:ring-0 outline-none bg-slate-50/50"
-                        oninput="validateInput(this, 2)" data-key="Q${i}" data-section="A">
-                        <span id="badge-Q${i}" class="part-a-badge hidden">Included</span>
+                    <div>
+                        <label class="block text-center text-[10px] font-bold text-slate-400 mb-1 uppercase">Q${i}</label>
+                        <input type="number" inputmode="decimal" min="0" max="2" step="0.5" 
+                        class="input-bubble w-full h-14"
+                        oninput="handleInput(this, 2)" data-key="Q${i}" data-section="A">
                     </div>`);
             }
 
@@ -341,29 +377,37 @@
             const max = session.activeIA === 'IA1' ? 5 : 10;
 
             const renderQ = (q) => {
-                let h = `<div class="q-card"><div class="mb-4 font-bold text-lg text-slate-800 border-b border-slate-100 pb-2">${q}</div><div class="grid gap-4">`;
+                let h = `<div class="bg-white border border-slate-200 rounded-2xl p-5 mb-4 shadow-sm"><div class="font-bold text-2xl text-slate-800 mb-4 pb-2 border-b border-slate-100">${q}</div><div>`;
                 subs.forEach(s => {
-                    h += `<div class="flex items-center justify-between">
-                        <span class="w-16 text-sm font-bold text-slate-500 font-mono">${q}${s}</span>
-                        <input type="number" inputmode="decimal" min="0" max="${max}" step="0.5" class="w-24 h-12 rounded-xl border-slate-200 text-right font-bold text-lg text-slate-800 focus:border-slate-900 focus:ring-0 outline-none p-2 bg-slate-50/50"
-                        oninput="validateInput(this, ${max})" data-key="${q}${s}" data-group="${q}">
+                    h += `<div class="part-b-row">
+                        <span class="text-base font-bold text-slate-500 font-mono">${q}${s}</span>
+                        <input type="number" inputmode="decimal" min="0" max="${max}" step="0.5" placeholder="-"
+                        class="input-bubble w-24 h-12"
+                        oninput="handleInput(this, ${max})" data-key="${q}${s}" data-group="${q}">
                     </div>`;
                 });
                 return h + `</div></div>`;
             };
 
-            // Clean Layout without "Module" Headers
             let html = renderQ('Q8') + renderQ('Q9');
-            html += '<div class="h-4"></div>'; // Spacer
+            html += `<div class="h-2"></div>`;
             html += renderQ('Q10') + renderQ('Q11');
             $('#partBContainer').html(html);
         }
 
-        function validateInput(input, max) {
+        function handleInput(input, max) {
+            validateInput(input, max);
+            // Save to local session immediately
+            if(!session.tempMarks[session.activeIA]) session.tempMarks[session.activeIA] = {};
+            session.tempMarks[session.activeIA][input.dataset.key] = input.value;
+            localStorage.setItem('studentSession', JSON.stringify(session));
+        }
+
+        function validateInput(input, max, doCalc=true) {
             let val = parseFloat(input.value);
             if(val > max) { input.value = max; input.classList.add('error-border'); setTimeout(() => input.classList.remove('error-border'), 500); }
             if(val < 0) input.value = 0;
-            updateCalc();
+            if(doCalc) updateCalc();
         }
 
         function getGroupTotal(group) {
@@ -380,14 +424,12 @@
             for(let i=0; i<5 && i<aVals.length; i++) { aSum += aVals[i].val; topIds.push(aVals[i].id); }
             
             document.querySelectorAll(`input[data-section="A"]`).forEach(inp => {
-                const badge = document.getElementById(`badge-${inp.dataset.key}`);
-                const input = inp;
                 if(inp.value !== "" && topIds.includes(inp.dataset.key)) {
-                    badge.classList.remove('hidden');
-                    input.classList.add('bg-blue-50/30');
+                    inp.style.backgroundColor = '#eff6ff'; inp.style.color = '#1d4ed8'; inp.style.borderColor = '#bfdbfe';
+                } else if(inp.value !== "") {
+                    inp.style.backgroundColor = '#f8fafc'; inp.style.color = '#94a3b8'; inp.style.borderColor = '#e2e8f0';
                 } else {
-                    badge.classList.add('hidden');
-                    input.classList.remove('bg-blue-50/30');
+                    inp.removeAttribute('style');
                 }
             });
             $('#partATotal').text(aSum);
@@ -398,14 +440,107 @@
             $('#runningTotal').text(total);
         }
 
+        function openReview() {
+            $('#reviewTotal').text($('#runningTotal').text());
+            const content = $('#reviewContent');
+            content.empty();
+
+            // 1. PART A
+            let aVals = [];
+            document.querySelectorAll(`input[data-section="A"]`).forEach(inp => {
+                aVals.push({ id: inp.dataset.key, val: parseFloat(inp.value) || 0 });
+            });
+            let sortedA = [...aVals].sort((a,b) => b.val - a.val);
+            let topIds = sortedA.slice(0, 5).map(i => i.id);
+            let partATotal = sortedA.slice(0, 5).reduce((sum, item) => sum + item.val, 0);
+
+            let partAHtml = `
+                <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+                        <span class="font-bold text-slate-800 text-sm">Part A (Best 5)</span>
+                        <span class="font-bold text-blue-600 text-lg">${partATotal}</span>
+                    </div>
+                    <div class="grid grid-cols-4 gap-2">`;
+            
+            aVals.forEach(item => {
+                const isSelected = topIds.includes(item.id);
+                const bgClass = isSelected ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-transparent opacity-60';
+                const textClass = isSelected ? 'text-blue-700 font-bold' : 'text-slate-400';
+                partAHtml += `
+                    <div class="flex flex-col items-center justify-center p-2 rounded-lg border ${bgClass}">
+                        <span class="text-[10px] uppercase text-slate-400">${item.id}</span>
+                        <span class="${textClass} text-sm">${item.val}</span>
+                    </div>`;
+            });
+            partAHtml += `</div></div>`;
+            content.append(partAHtml);
+
+            // 2. PART B (Detailed Breakdown)
+            const renderGroup = (group) => {
+                let details = '';
+                let total = 0;
+                document.querySelectorAll(`input[data-group="${group}"]`).forEach(inp => {
+                    if(inp.value !== "" && inp.value > 0) {
+                        details += `<div class="review-sub-row"><span>${inp.dataset.key}</span><span class="review-sub-val">${inp.value}</span></div>`;
+                        total += parseFloat(inp.value);
+                    }
+                });
+                return { total, details: details || '<div class="text-xs text-slate-300 italic">No marks entered</div>' };
+            };
+
+            const q8 = renderGroup('Q8'), q9 = renderGroup('Q9');
+            const q10 = renderGroup('Q10'), q11 = renderGroup('Q11');
+            const m1Best = Math.max(q8.total, q9.total);
+            const m2Best = Math.max(q10.total, q11.total);
+
+            const renderSet = (title, bestScore, setA, dataA, setB, dataB) => `
+                <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm mb-4">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
+                        <span class="font-bold text-slate-800 text-sm">${title}</span>
+                        <span class="font-bold text-blue-600 text-lg">${bestScore}</span>
+                    </div>
+                    
+                    <!-- Group A -->
+                    <div class="review-group">
+                        <div class="review-header">
+                            <span>${setA}</span>
+                            <span>${dataA.total} ${dataA.total >= dataB.total && dataA.total > 0 ? '<span class="review-best-badge">BEST</span>' : ''}</span>
+                        </div>
+                        ${dataA.details}
+                    </div>
+
+                    <!-- Group B -->
+                    <div class="review-group !mb-0">
+                        <div class="review-header">
+                            <span>${setB}</span>
+                            <span>${dataB.total} ${dataB.total > dataA.total ? '<span class="review-best-badge">BEST</span>' : ''}</span>
+                        </div>
+                        ${dataB.details}
+                    </div>
+                </div>`;
+
+            content.append(renderSet("Set 1 Breakdown", m1Best, "Q8", q8, "Q9", q9));
+            content.append(renderSet("Set 2 Breakdown", m2Best, "Q10", q10, "Q11", q11));
+
+            $('#viewEntry').hide();
+            $('#viewReview').show().addClass('fade-enter-active');
+            window.scrollTo(0,0);
+        }
+
+        function closeReview() { 
+            $('#viewReview').hide(); 
+            $('#viewEntry').show().addClass('fade-enter-active');
+            window.scrollTo(0,document.body.scrollHeight);
+        }
+
         async function submitSplitUp() {
-            const btn = $('#btnSubmit');
+            const btn = $('#btnFinalSubmit');
             btn.html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
 
             const payload = {
                 action: 'submit',
                 config: { dept: session.dept, ia: session.activeIA },
-                student: { usn: session.usn, name: session.name, sem: '1', code: '25ENUEC158' },
+                student: { usn: session.usn, name: session.name },
                 calculatedTotal: $('#runningTotal').text(),
                 marks: {}
             };
@@ -421,18 +556,24 @@
                     body: JSON.stringify(payload)
                 });
                 alert("Saved Successfully!");
+                
+                // Update Session Data
                 if(!session.splitUpData) session.splitUpData = {};
                 session.splitUpData[session.activeIA] = payload.marks;
+                // Clear Temp Marks
+                if(session.tempMarks[session.activeIA]) delete session.tempMarks[session.activeIA];
+                localStorage.setItem('studentSession', JSON.stringify(session));
+                
                 updateDashButtons();
+                $('#viewReview').hide();
                 showDashboard();
             } catch(e) {
                 alert("Error saving.");
             } finally {
-                btn.text('Save').prop('disabled', false);
+                btn.text('Confirm & Save').prop('disabled', false);
             }
         }
-        function logout() { location.reload(); }
+        function logout() { localStorage.removeItem('studentSession'); location.reload(); }
     </script>
 </body>
-
 </html>
