@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Student Result Portal</title>
+    <title>Results Portal</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -15,116 +15,151 @@
         
         body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; -webkit-tap-highlight-color: transparent; }
         
-        /* Animations */
         .fade-enter-active { animation: fadeIn 0.3s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden-section { display: none; }
 
-        /* Glass & Cards */
+        /* Faculty Table */
+        .fac-container { overflow-x: auto; border-radius: 12px; border: 1px solid #e2e8f0; background: white; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .fac-table { width: 100%; border-collapse: separate; border-spacing: 0; white-space: nowrap; }
+        .fac-table th { background: #f1f5f9; color: #475569; font-weight: 700; text-transform: uppercase; font-size: 0.65rem; padding: 10px 12px; text-align: left; position: sticky; top: 0; border-bottom: 2px solid #e2e8f0; z-index: 10; letter-spacing: 0.05em; }
+        .fac-table td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; font-size: 0.85rem; vertical-align: middle; }
+        .fac-table tr:hover { background-color: #f8fafc; }
+        
+        .status-dot { font-size: 1.2rem; line-height: 0; position: relative; top: 3px; margin-right: 2px; }
+        .status-green { color: #10b981; }
+        .status-gray { color: #cbd5e1; }
+        
+        .low-mark { color: #dc2626; font-weight: 800; } /* Red color for low marks */
+
+        /* Common */
         .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05); }
         .dash-card { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02); border: 1px solid #f1f5f9; transition: transform 0.2s; }
         .dash-card:active { transform: scale(0.98); }
-
-        /* Inputs */
-        .input-bubble {
-            background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px;
-            text-align: center; font-weight: 700; font-size: 1.1rem; color: #334155;
-            transition: all 0.2s; outline: none;
-        }
+        .input-bubble { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; text-align: center; font-weight: 700; font-size: 1.1rem; color: #334155; transition: all 0.2s; outline: none; }
         .input-bubble:focus { background: white; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
-        .part-b-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #f1f5f9; }
-        .part-b-row:last-child { border-bottom: none; }
-
-        /* Select2 Customization */
         .select2-container .select2-selection--single { height: 52px !important; padding: 12px !important; border-radius: 12px !important; border: 1px solid #e2e8f0 !important; background-color: #f8fafc !important; }
         .select2-container--default .select2-selection--single .select2-selection__arrow { top: 14px !important; }
-
-        /* Highlighting */
         .mark-ab { color: #ef4444; background: #fef2f2; padding: 2px 6px; border-radius: 4px; font-weight: 800; font-size: 0.9em; }
         .error-border { border-color: #ef4444 !important; background-color: #fff5f5 !important; }
-        
-        /* Detailed Review Styles */
-        .review-group { background: #f8fafc; border-radius: 12px; padding: 12px; margin-bottom: 12px; }
-        .review-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem; color: #1e293b; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; }
-        .review-sub-row { display: flex; justify-content: space-between; font-size: 0.85rem; color: #64748b; padding: 2px 0; }
-        .review-sub-val { font-family: monospace; font-weight: 600; color: #334155; }
-        .review-best-badge { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 99px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .part-a-badge { font-size: 0.65rem; padding: 2px 6px; border-radius: 99px; background: #eff6ff; color: #3b82f6; font-weight: 600; margin-top: 4px; display: inline-block; }
+        .part-a-excluded { background: #f3f4f6; color: #9ca3af; }
     </style>
 </head>
 <body class="bg-slate-50">
 
     <!-- 1. LOGIN SCREEN -->
     <div id="viewLogin" class="min-h-screen flex flex-col items-center justify-center p-6">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-10">
-                <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-slate-900 text-white mb-6 shadow-xl shadow-slate-200">
-                    <i class="fas fa-university text-3xl"></i>
-                </div>
-                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Results Portal</h1>
-                <p class="text-slate-500 font-medium mt-2">Check results & enter marks</p>
+        <div class="w-full max-w-md glass-panel p-6 rounded-3xl shadow-lg">
+            <div class="text-center mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Portal Login</h1>
             </div>
 
-            <form onsubmit="handleLogin(event)" class="space-y-5">
-                <div class="bg-white p-1.5 rounded-2xl flex shadow-sm border border-slate-200">
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="loginDept" value="CSE" checked class="peer sr-only" onchange="populateUSN()">
-                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-slate-100 peer-checked:text-slate-900 transition-all">CSE</div>
-                    </label>
-                    <label class="flex-1 cursor-pointer">
-                        <input type="radio" name="loginDept" value="ISE" class="peer sr-only" onchange="populateUSN()">
-                        <div class="py-3 rounded-xl text-center text-sm font-bold text-slate-500 peer-checked:bg-slate-100 peer-checked:text-slate-900 transition-all">ISE</div>
-                    </label>
-                </div>
+            <!-- Tabs -->
+            <div class="flex border-b border-slate-100 mb-6">
+                <button class="flex-1 pb-3 text-sm font-bold text-blue-600 border-b-2 border-blue-600" id="tabStudent" onclick="switchTab('student')">Student</button>
+                <button class="flex-1 pb-3 text-sm font-bold text-slate-400" id="tabFaculty" onclick="switchTab('faculty')">Faculty</button>
+            </div>
 
-                <div>
-                    <select id="loginUSN" class="w-full" required disabled><option value="">Select Department First...</option></select>
+            <!-- STUDENT FORM -->
+            <form id="formStudent" onsubmit="handleLogin(event)">
+                <div class="space-y-4">
+                    <div class="bg-slate-50 p-1.5 rounded-2xl flex">
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="loginDept" value="CSE" checked class="peer sr-only" onchange="populateUSN()">
+                            <div class="py-2.5 rounded-xl text-center text-xs font-bold text-slate-500 peer-checked:bg-white peer-checked:text-slate-900 peer-checked:shadow-sm">CSE</div>
+                        </label>
+                        <label class="flex-1 cursor-pointer">
+                            <input type="radio" name="loginDept" value="ISE" class="peer sr-only" onchange="populateUSN()">
+                            <div class="py-2.5 rounded-xl text-center text-xs font-bold text-slate-500 peer-checked:bg-white peer-checked:text-slate-900 peer-checked:shadow-sm">ISE</div>
+                        </label>
+                    </div>
+                    <select id="loginUSN" class="w-full" required disabled><option value="">Select Department...</option></select>
+                    <input type="text" id="loginDOB" placeholder="DOB (DD-MM-YYYY)" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 text-center font-mono placeholder:text-slate-300 outline-none focus:border-slate-900" required>
+                    <button type="submit" id="btnLogin" class="w-full bg-slate-900 text-white font-bold py-3.5 rounded-xl hover:bg-slate-800 transition-all">View Results</button>
                 </div>
+            </form>
 
-                <div>
-                    <input type="text" id="loginDOB" placeholder="Date of Birth (DD-MM-YYYY)" inputmode="numeric"
-                        class="w-full px-4 py-3.5 rounded-xl border border-slate-200 bg-white focus:border-slate-900 focus:ring-0 outline-none transition-all font-mono text-center text-lg placeholder:text-slate-300" required>
-                </div>
-
-                <button type="submit" id="btnLogin" class="w-full bg-slate-900 text-white font-bold py-4 rounded-xl shadow-lg hover:bg-slate-800 active:scale-[0.99] transition-all mt-4 text-lg">
-                    Login
-                </button>
+            <!-- FACULTY FORM -->
+            <form id="formFaculty" class="hidden space-y-4" onsubmit="handleFacultyLogin(event)">
+                <input type="text" id="facUser" placeholder="Username" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-600" required>
+                <input type="password" id="facPass" placeholder="Password" class="w-full px-4 py-3.5 rounded-xl border border-slate-200 outline-none focus:border-blue-600" required>
+                <button type="submit" id="btnFacLogin" class="w-full bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition-all">Access Dashboard</button>
             </form>
         </div>
     </div>
 
-    <!-- 2. DASHBOARD -->
+    <!-- 2. FACULTY DASHBOARD (Consolidated View) -->
+    <div id="viewFacultyDash" class="hidden-section min-h-screen bg-slate-50 pb-10">
+        <div class="bg-blue-600 px-6 py-5 sticky top-0 z-30 shadow-md">
+            <div class="max-w-7xl mx-auto flex justify-between items-center text-white">
+                <div>
+                    <h2 class="text-xl font-bold">Consolidated Marks</h2>
+                    <p class="text-xs text-blue-200">Weightage Calculation</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <select id="facDeptSelect" onchange="loadBatchData()" class="bg-blue-700 text-white border-none rounded-lg text-sm font-bold px-3 py-1.5 outline-none">
+                        <!-- Options populated dynamically based on access -->
+                    </select>
+                    <button onclick="logout()" class="text-blue-200 hover:text-white"><i class="fas fa-sign-out-alt"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-[95%] mx-auto px-2 py-6">
+            <div class="fac-container">
+                <table class="fac-table">
+                    <thead>
+                        <tr>
+                            <th class="w-10">#</th>
+                            <th>Reg. No</th>
+                            <th>Name</th>
+                            <th>IA 1</th>
+                            <th>IA 2</th>
+                            <th>Avg IA (50)</th>
+                            <th>Avg (20)</th>
+                            <th>OA (Proj)</th>
+                            <th>Lab (10)</th>
+                            <th>CP (5)</th>
+                            <th>Total (40)</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facTableBody">
+                        <tr><td colspan="12" class="text-center text-slate-400 py-8">Loading Data...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. STUDENT DASHBOARD -->
     <div id="viewDashboard" class="hidden-section min-h-screen pb-10">
         <div class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-4 flex justify-between items-center shadow-sm">
             <div>
                 <h2 class="font-bold text-slate-900 text-lg leading-tight truncate max-w-[200px]" id="dashName">Student</h2>
-                <p class="text-xs text-slate-500 font-mono mt-0.5" id="dashUSN">USN</p>
+                <p class="text-xs text-slate-500 font-mono mt-0.5" id="dashUSN">Reg. No</p>
             </div>
-            <div class="flex items-center gap-2">
-                <button onclick="handleLogin(null, true)" class="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition-colors" title="Refresh Data">
-                    <i class="fas fa-sync-alt text-xs"></i>
-                </button>
-                <button onclick="logout()" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100 transition-colors" title="Logout">
-                    <i class="fas fa-power-off text-sm"></i>
-                </button>
+            <div class="flex gap-2">
+                <button onclick="backToFaculty()" id="btnBackFac" class="hidden px-3 py-1 bg-slate-100 text-slate-600 rounded-lg text-xs font-bold hover:bg-slate-200">Back</button>
+                <button onclick="logout()" id="btnLogoutStudent" class="w-9 h-9 rounded-full bg-red-50 text-red-500 flex items-center justify-center hover:bg-red-100"><i class="fas fa-power-off text-sm"></i></button>
             </div>
         </div>
 
         <div class="max-w-3xl mx-auto px-4 py-6 space-y-6">
-            <!-- IA Cards -->
             <div class="grid grid-cols-2 gap-4">
                 <div class="dash-card border-l-4 border-l-blue-500">
                     <div class="flex justify-between mb-3"><span class="text-xs font-bold text-slate-400">IA - 1</span><span class="bg-blue-50 text-blue-600 text-[10px] px-2 py-0.5 rounded font-bold">SEPT</span></div>
                     <div class="text-3xl font-black text-slate-900 mb-1" id="resIA1">--</div>
-                    <button onclick="openSplitUp('IA1')" id="btnIA1" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">Split-Up</button>
+                    <button onclick="openSplitUp('IA1')" id="btnIA1" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100 hover:bg-slate-100">Split-Up</button>
                 </div>
                 <div class="dash-card border-l-4 border-l-emerald-500">
                     <div class="flex justify-between mb-3"><span class="text-xs font-bold text-slate-400">IA - 2</span><span class="bg-emerald-50 text-emerald-600 text-[10px] px-2 py-0.5 rounded font-bold">NOV</span></div>
                     <div class="text-3xl font-black text-slate-900 mb-1" id="resIA2">--</div>
-                    <button onclick="openSplitUp('IA2')" id="btnIA2" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">Split-Up</button>
+                    <button onclick="openSplitUp('IA2')" id="btnIA2" class="w-full mt-2 py-2 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100 hover:bg-slate-100">Split-Up</button>
                 </div>
             </div>
 
-            <!-- Results Table -->
             <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
                 <div class="px-5 py-4 border-b border-slate-100 bg-slate-50/50"><h3 class="font-bold text-slate-800 text-sm">Other Components</h3></div>
                 <div class="p-5 space-y-4">
@@ -136,7 +171,7 @@
         </div>
     </div>
 
-    <!-- 3. ENTRY FORM -->
+    <!-- 4. ENTRY FORM -->
     <div id="viewEntry" class="hidden-section min-h-screen bg-white pb-24">
         <div class="bg-white/90 backdrop-blur-md border-b sticky top-0 z-40 px-4 py-3 flex items-center shadow-sm">
             <button onclick="showDashboard()" class="w-10 h-10 rounded-full bg-slate-50 text-slate-600 flex items-center justify-center mr-3 hover:bg-slate-100">
@@ -149,59 +184,39 @@
         </div>
 
         <div class="max-w-2xl mx-auto px-4 py-6 space-y-8">
-            <!-- Part A -->
             <div>
                 <div class="flex justify-between items-end mb-4 px-1">
                     <h3 class="font-bold text-slate-800 text-sm uppercase tracking-wide">PART A</h3>
                     <span class="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded-lg">Max 2 Each</span>
                 </div>
                 <div class="grid grid-cols-4 gap-3" id="partAContainer"></div>
-                <div class="text-right mt-2 text-xs font-bold text-slate-400">
-                    Total (Best 5): <span id="partATotal" class="text-slate-900 text-sm">0</span>
-                </div>
+                <div class="text-right mt-2 text-xs font-bold text-slate-400">Total (Best 5): <span id="partATotal" class="text-slate-900 text-sm">0</span></div>
             </div>
-
-            <!-- Part B -->
             <div id="partBContainer" class="space-y-6"></div>
         </div>
 
-        <!-- Action Footer -->
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
             <div class="max-w-2xl mx-auto flex justify-between items-center gap-4">
-                <div>
-                    <div class="text-[10px] uppercase font-bold text-slate-400">Entry Total</div>
-                    <div class="text-2xl font-black text-blue-600 leading-none" id="runningTotal">0</div>
-                </div>
-                <button onclick="openReview()" class="bg-slate-900 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg hover:bg-slate-800 active:scale-95 transition-all flex-1 max-w-[160px]">
-                    Review
-                </button>
+                <div><div class="text-[10px] uppercase font-bold text-slate-400">Entry Total</div><div class="text-2xl font-black text-blue-600 leading-none" id="runningTotal">0</div></div>
+                <button onclick="openReview()" class="bg-slate-900 text-white font-bold py-3.5 px-8 rounded-xl shadow-lg hover:bg-slate-800 active:scale-95 transition-all flex-1 max-w-[160px]">Review</button>
             </div>
         </div>
     </div>
 
-    <!-- 4. DETAILED REVIEW PAGE -->
+    <!-- 5. REVIEW PAGE -->
     <div id="viewReview" class="hidden-section min-h-screen bg-slate-50 pb-24">
         <div class="bg-white border-b border-slate-200 sticky top-0 z-30 px-4 py-4 flex items-center shadow-sm">
-            <button onclick="closeReview()" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mr-3 hover:bg-slate-200">
-                <i class="fas fa-arrow-left"></i>
-            </button>
-            <div>
-                <h2 class="font-bold text-slate-900 text-lg">Confirm Marks</h2>
-                <p class="text-xs text-slate-500">Verify details before saving</p>
-            </div>
+            <button onclick="closeReview()" class="w-10 h-10 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center mr-3 hover:bg-slate-200"><i class="fas fa-arrow-left"></i></button>
+            <div><h2 class="font-bold text-slate-900 text-lg">Confirm Marks</h2><p class="text-xs text-slate-500">Verify details before saving</p></div>
         </div>
-
         <div class="max-w-2xl mx-auto px-4 py-6 space-y-6">
             <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 text-center">
                 <p class="text-xs font-bold text-slate-400 uppercase mb-2">Grand Total Calculated</p>
                 <p class="text-5xl font-black text-blue-600" id="reviewTotal">0</p>
                 <p class="text-xs text-slate-400 mt-2 font-medium">Part A (Best 5) + Part B (Best of Sets)</p>
             </div>
-
             <div id="reviewContent" class="space-y-4"></div>
         </div>
-
-        <!-- Footer -->
         <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 p-4 shadow-[0_-4px_20px_rgba(0,0,0,0.05)] z-50">
             <div class="max-w-2xl mx-auto flex gap-3">
                 <button onclick="closeReview()" class="flex-1 py-3.5 rounded-xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors">Edit</button>
@@ -212,368 +227,279 @@
 
     <script>
         // *** PASTE DEPLOYED WEB APP URL HERE ***
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby10M5zo1Ol5NNCry5_drTE67Hy9trxXf8xxmZWU98dJzEEdGhDuZJqxdcyT2pEbaCX4Q/exec"; 
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxXTkm7w_Tsqs5nIsDYuJtx9KGW0hns3mS53O-Id-WFN-ytj54Lr3YGXpf9fDXHfcDVlQ/exec"; 
 
-        let session = { dept: '', usn: '', name: '', dob: '', activeIA: '', splitUpData: null, tempMarks: {} };
+        let session = { role: '', dept: '', usn: '', name: '', dob: '', activeIA: '', splitUpData: null, tempMarks: {}, facultyAccess: [] };
 
         $(document).ready(function() {
             $('#loginUSN').select2({ placeholder: "Select Register No" });
-            
-            // 1. CHECK FOR SAVED SESSION
-            const savedSession = localStorage.getItem('studentSession');
-            if (savedSession) {
+            const saved = localStorage.getItem('marksPortalSession');
+            if(saved) {
                 try {
-                    const parsed = JSON.parse(savedSession);
-                    session = parsed;
-                    // Restore UI State immediately
-                    $('#loginDept').val(session.dept); // Visual only
-                    restoreDashboard();
-                    // Background refresh
-                    handleLogin(null, true);
-                } catch(e) { localStorage.removeItem('studentSession'); populateUSN(); }
-            } else {
-                populateUSN();
-            }
+                    const parsed = JSON.parse(saved); session = parsed;
+                    if(session.role === 'faculty') {
+                        setupFacultyView(session.facultyAccess);
+                    } else {
+                        $('#dashName').text(session.name); $('#dashUSN').text(session.usn);
+                        if(session.officialMarks) renderDashboardMarks(session.officialMarks);
+                        updateDashButtons(); $('#viewLogin').hide(); $('#viewDashboard').show().addClass('fade-enter-active');
+                    }
+                } catch(e) { localStorage.removeItem('marksPortalSession'); populateUSN(); }
+            } else { populateUSN(); }
         });
 
-        function restoreDashboard() {
-            $('#dashName').text(session.name);
-            $('#dashUSN').text(session.usn);
-            if(session.officialMarks) renderDashboardMarks(session.officialMarks);
-            updateDashButtons();
-            $('#viewLogin').hide();
-            $('#viewDashboard').show().addClass('fade-enter-active');
+        function switchTab(tab) {
+            if(tab === 'student') { $('#formStudent').removeClass('hidden'); $('#formFaculty').addClass('hidden'); $('#tabStudent').addClass('text-blue-600 border-blue-600').removeClass('text-slate-400'); $('#tabFaculty').removeClass('text-blue-600 border-blue-600').addClass('text-slate-400'); }
+            else { $('#formStudent').addClass('hidden'); $('#formFaculty').removeClass('hidden'); $('#tabFaculty').addClass('text-blue-600 border-blue-600').removeClass('text-slate-400'); $('#tabStudent').removeClass('text-blue-600 border-blue-600').addClass('text-slate-400'); }
         }
 
         async function populateUSN() {
             if(!GOOGLE_SCRIPT_URL) return;
             const dept = $('input[name="loginDept"]:checked').val();
-            const $select = $('#loginUSN');
-            $select.empty().append('<option value="">Loading...</option>').prop('disabled', true);
+            const $select = $('#loginUSN'); $select.empty().append('<option value="">Loading...</option>').prop('disabled', true);
             try {
                 const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getStudentList&dept=${dept}`);
                 const data = await res.json();
                 $select.empty().append('<option value="">Select Register No</option>');
-                if (data.status === 'success' && data.students) {
-                    data.students.forEach(s => $select.append(new Option(`${s.id} - ${s.name}`, s.id)));
-                    $select.prop('disabled', false);
-                } else { $select.append('<option value="">Error loading list</option>'); }
-            } catch (e) { console.error("Fetch error", e); $select.empty().append('<option value="">Connection Failed</option>'); }
-            $select.trigger('change');
+                if (data.status === 'success' && data.students) { data.students.forEach(s => $select.append(new Option(`${s.id} - ${s.name}`, s.id))); $select.prop('disabled', false); }
+            } catch(e) { console.error(e); } $select.trigger('change');
         }
 
-        async function handleLogin(e, isRefresh = false) {
-            if(e) e.preventDefault();
-            if(!GOOGLE_SCRIPT_URL) { alert("Configure Script URL!"); return; }
+        // FACULTY
+        async function handleFacultyLogin(e) {
+            e.preventDefault();
+            const user = $('#facUser').val();
+            const pass = $('#facPass').val();
             
-            const usn = isRefresh ? session.usn : $('#loginUSN').val();
-            const dob = isRefresh ? session.dob : $('#loginDOB').val();
-            const dept = isRefresh ? session.dept : $('input[name="loginDept"]:checked').val();
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=facultyLogin&user=${user}&pass=${pass}`);
+                const data = await res.json();
+                
+                if(data.status === 'error') { alert(data.message); return; }
+                
+                const access = data.access.split(',').map(d => d.trim());
+                session.role = 'faculty'; session.facultyAccess = access;
+                localStorage.setItem('marksPortalSession', JSON.stringify(session));
+                setupFacultyView(access);
+            } catch(e) { alert("Login failed"); }
+        }
 
-            if(!usn || !dob) { alert("Please fill all fields"); return; }
-            if(!isRefresh) $('#btnLogin').html('<i class="fas fa-spinner fa-spin"></i> Authenticating...').prop('disabled', true);
+        function setupFacultyView(access) {
+            const $sel = $('#facDeptSelect');
+            $sel.empty();
+            access.forEach(d => $sel.append(new Option(d, d)));
+            loadBatchData();
+        }
 
+        async function loadBatchData() {
+            const dept = $('#facDeptSelect').val();
+            if(!dept) return; // Should not happen if access list is populated
+            
+            $('#viewLogin').hide(); $('#viewFacultyDash').show();
+            $('#facTableBody').html('<tr><td colspan="12" class="text-center py-8">Loading...</td></tr>');
+
+            try {
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=getBatchData&dept=${dept}&facultyAuth=true`);
+                const data = await res.json();
+                if(data.status === 'error') { alert(data.message); logout(); return; }
+                
+                // Sort by Register Number
+                data.data.sort((a, b) => a.usn.localeCompare(b.usn));
+                
+                const rows = data.data.map((s, idx) => {
+                    const ia1 = parseFloat(s.ia1_raw) || 0; const ia2 = parseFloat(s.ia2_raw) || 0;
+                    const iaAvg = Math.ceil((ia1 + ia2) / 2);
+                    const ia20 = Math.ceil((iaAvg / 50) * 20);
+                    const oa = parseFloat(s.proj||0);
+                    const lab = parseFloat(s.lab||0);
+                    const cp = parseFloat(s.cp||0);
+                    const total40 = ia20 + lab + oa + cp;
+                    
+                    const status1 = s.ia1_submitted ? 'status-green' : 'status-gray';
+                    const status2 = s.ia2_submitted ? 'status-green' : 'status-gray';
+                    
+                    // Updated Red Highlight Logic (<40% of max)
+                    const low = (val, max) => val < (max * 0.4) ? 'low-mark' : '';
+                    
+                    return `<tr class="cursor-pointer" onclick="facultyEditStudent('${s.usn}')">
+                        <td class="font-bold text-slate-400 text-xs">${idx+1}</td>
+                        <td class="font-mono text-xs font-bold text-slate-600">${s.usn}</td>
+                        <td class="font-bold text-slate-800 text-xs truncate max-w-[150px]">${s.name}</td>
+                        <td class="font-bold text-slate-800 ${low(ia1, 50)}"><span class="status-dot ${status1}">*</span> ${s.ia1_raw}</td>
+                        <td class="font-bold text-slate-800 ${low(ia2, 50)}"><span class="status-dot ${status2}">*</span> ${s.ia2_raw}</td>
+                        <td class="text-slate-600 font-medium ${low(iaAvg, 50)}">${iaAvg}</td>
+                        <td class="text-slate-600 font-medium ${low(ia20, 20)}">${ia20}</td>
+                        <td class="text-slate-500 ${low(oa, 5)}">${s.proj||'-'}</td>
+                        <td class="text-slate-500 ${low(lab, 10)}">${s.lab||'-'}</td>
+                        <td class="text-slate-500 ${low(cp, 5)}">${s.cp||'-'}</td>
+                        <td class="font-bold text-blue-600 ${low(total40, 40)}">${total40}</td>
+                        <td><button class="text-[10px] bg-slate-100 text-slate-600 px-2 py-1 rounded font-bold hover:bg-blue-50 hover:text-blue-600">EDIT</button></td>
+                    </tr>`;
+                }).join('');
+                $('#facTableBody').html(rows);
+            } catch(e) { alert("Error loading"); logout(); }
+        }
+
+        async function facultyEditStudent(usn) {
+            try {
+                const dept = $('#facDeptSelect').val();
+                const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=login&usn=${usn}&dept=${dept}&facultyAuth=true`);
+                const data = await res.json();
+                session.usn = usn; session.name = data.studentName; session.dept = dept;
+                session.splitUpData = data.splitUpData; session.officialMarks = data.results;
+                $('#viewFacultyDash').hide(); $('#btnBackFac').removeClass('hidden'); $('#btnLogoutStudent').addClass('hidden');
+                $('#dashName').text(session.name); $('#dashUSN').text(session.usn);
+                renderDashboardMarks(data.results); updateDashButtons(); $('#viewDashboard').show();
+            } catch(e) { alert("Error"); }
+        }
+
+        function backToFaculty() {
+            $('#viewDashboard').hide(); $('#viewEntry').hide(); $('#viewFacultyDash').show();
+            $('#btnBackFac').addClass('hidden'); $('#btnLogoutStudent').removeClass('hidden');
+            loadBatchData();
+        }
+
+        // STUDENT
+        async function handleLogin(e) {
+            e.preventDefault();
+            const usn = $('#loginUSN').val(), dob = $('#loginDOB').val(), dept = $('input[name="loginDept"]:checked').val();
+            if(!usn || !dob) { alert("Fill all fields"); return; }
+            $('#btnLogin').text('Authenticating...').prop('disabled', true);
             try {
                 const res = await fetch(`${GOOGLE_SCRIPT_URL}?action=login&usn=${usn}&dob=${dob}&dept=${dept}`);
                 const data = await res.json();
-
-                if(data.status === 'error') {
-                    if(isRefresh) { localStorage.removeItem('studentSession'); location.reload(); }
-                    else { alert(data.message); $('#btnLogin').text('View Results').prop('disabled', false); }
-                    return;
-                }
-
-                // Update Session
-                session.dept = dept; session.usn = usn; session.dob = dob; session.name = data.studentName;
-                session.splitUpData = data.splitUpData;
-                session.officialMarks = data.results;
-                session.tempMarks = session.tempMarks || {}; // Keep local edits
-                
-                localStorage.setItem('studentSession', JSON.stringify(session));
-
-                $('#dashName').text(session.name);
-                $('#dashUSN').text(session.usn);
-                renderDashboardMarks(data.results);
-                updateDashButtons();
-
-                if(!isRefresh) {
-                    $('#viewLogin').hide();
-                    $('#viewDashboard').show().addClass('fade-enter-active');
-                }
-
-            } catch (err) {
-                console.error(err);
-                if(!isRefresh) alert("Connection Error.");
-            } finally {
-                if(!isRefresh) $('#btnLogin').text('View Results').prop('disabled', false);
-            }
+                if(data.status === 'error') { alert(data.message); $('#btnLogin').text('View Results').prop('disabled', false); return; }
+                session = { role: 'student', dept, usn, name: data.studentName, dob, splitUpData: data.splitUpData, officialMarks: data.results, tempMarks: {} };
+                localStorage.setItem('marksPortalSession', JSON.stringify(session));
+                $('#dashName').text(session.name); $('#dashUSN').text(session.usn);
+                renderDashboardMarks(data.results); updateDashButtons();
+                $('#viewLogin').hide(); $('#viewDashboard').show().addClass('fade-enter-active');
+            } catch(e) { alert("Error"); } finally { $('#btnLogin').text('View Results').prop('disabled', false); }
         }
 
         function renderDashboardMarks(results) {
-            const formatMark = (val) => {
-                if(val === 'AB' || val === 'ab') return `<span class="mark-ab">AB</span>`;
-                return val || "--";
-            };
-            $('#resIA1').html(formatMark(results.ia.IA1));
-            $('#resIA2').html(formatMark(results.ia.IA2));
-            $('#resLab').html(formatMark(results.others.Lab));
-            $('#resProj').html(formatMark(results.others.Project));
-            $('#resAtt').html(formatMark(results.others.Attendance));
+            const fmt = (val) => (val === 'AB' || val === 'ab') ? `<span class="mark-ab">AB</span>` : (val || "--");
+            $('#resIA1').html(fmt(results.ia.IA1)); $('#resIA2').html(fmt(results.ia.IA2));
+            $('#resLab').html(fmt(results.others.Lab)); $('#resProj').html(fmt(results.others.Project)); $('#resAtt').html(fmt(results.others.Attendance));
         }
 
         function updateDashButtons() {
-            const updateBtn = (id, type) => {
-                const hasData = session.splitUpData && session.splitUpData[type];
-                const btn = $(id);
-                if(hasData) {
-                    btn.text('Edit Split-Up').removeClass('bg-slate-50').addClass('bg-emerald-50 text-emerald-700 border-emerald-200');
-                } else {
-                    btn.text('Enter Split-Up').removeClass('bg-emerald-50 text-emerald-700 border-emerald-200').addClass('bg-slate-50');
-                }
-            };
-            updateBtn('#btnIA1', 'IA1');
-            updateBtn('#btnIA2', 'IA2');
+            const btn1 = $('#btnIA1'), btn2 = $('#btnIA2');
+            const styleDone = 'bg-green-50 text-green-700 border-green-200', styleDo = 'bg-slate-50 text-slate-600 border-slate-100';
+            if(session.splitUpData && session.splitUpData['IA1']) btn1.text('Edit Split-Up').removeClass(styleDo).addClass(styleDone);
+            else btn1.text('Enter Split-Up').removeClass(styleDone).addClass(styleDo);
+            if(session.splitUpData && session.splitUpData['IA2']) btn2.text('Edit Split-Up').removeClass(styleDo).addClass(styleDone);
+            else btn2.text('Enter Split-Up').removeClass(styleDone).addClass(styleDo);
         }
 
-        function openSplitUp(iaType) {
-            session.activeIA = iaType;
-            $('#entryTitle').text(`${iaType} Split-Up`);
-            $('#viewDashboard').hide();
-            $('#viewEntry').show();
-            window.scrollTo(0,0);
+        function openSplitUp(ia) {
+            session.activeIA = ia;
+            $('#entryTitle').text(`${ia} Split-Up`);
+            $('#viewDashboard').hide(); $('#viewEntry').show(); window.scrollTo(0,0);
             renderForm();
-
-            // 1. Load Saved Data
-            const saved = session.splitUpData && session.splitUpData[iaType] ? session.splitUpData[iaType] : {};
-            // 2. Load Unsaved Local Edits (Override Saved)
-            const temp = session.tempMarks && session.tempMarks[iaType] ? session.tempMarks[iaType] : {};
-            const marksToLoad = { ...saved, ...temp };
-
-            for (const [key, val] of Object.entries(marksToLoad)) {
-                const input = document.querySelector(`input[data-key="${key}"]`);
-                if(input) {
-                    input.value = val;
-                    validateInput(input, input.max, false);
-                }
+            const saved = session.splitUpData && session.splitUpData[ia] ? session.splitUpData[ia] : {};
+            const temp = session.tempMarks && session.tempMarks[ia] ? session.tempMarks[ia] : {};
+            const marks = { ...saved, ...temp };
+            for (const [k, v] of Object.entries(marks)) {
+                const inp = document.querySelector(`input[data-key="${k}"]`);
+                if(inp) { inp.value = v; validateInput(inp, inp.max, false); }
             }
             updateCalc();
         }
 
-        function showDashboard() { $('#viewEntry').hide(); $('#viewDashboard').show(); }
-
         function renderForm() {
             $('#partAContainer').empty();
             for(let i=1; i<=7; i++) {
-                $('#partAContainer').append(`
-                    <div>
-                        <label class="block text-center text-[10px] font-bold text-slate-400 mb-1 uppercase">Q${i}</label>
-                        <input type="number" inputmode="decimal" min="0" max="2" step="0.5" 
-                        class="input-bubble w-full h-14"
-                        oninput="handleInput(this, 2)" data-key="Q${i}" data-section="A">
-                    </div>`);
+                $('#partAContainer').append(`<div><label class="block text-center text-[10px] font-bold text-slate-400 mb-1 uppercase">Q${i}</label><input type="number" inputmode="decimal" min="0" max="2" step="0.5" class="input-bubble w-full h-14" oninput="handleInput(this, 2)" data-key="Q${i}" data-section="A"></div>`);
             }
-
             const subs = session.activeIA === 'IA1' ? ['a(i)', 'a(ii)', 'b(i)', 'b(ii)'] : ['a', 'b'];
             const max = session.activeIA === 'IA1' ? 5 : 10;
-
             const renderQ = (q) => {
                 let h = `<div class="bg-white border border-slate-200 rounded-2xl p-5 mb-4 shadow-sm"><div class="font-bold text-2xl text-slate-800 mb-4 pb-2 border-b border-slate-100">${q}</div><div>`;
-                subs.forEach(s => {
-                    h += `<div class="part-b-row">
-                        <span class="text-base font-bold text-slate-500 font-mono">${q}${s}</span>
-                        <input type="number" inputmode="decimal" min="0" max="${max}" step="0.5" placeholder="-"
-                        class="input-bubble w-24 h-12"
-                        oninput="handleInput(this, ${max})" data-key="${q}${s}" data-group="${q}">
-                    </div>`;
-                });
+                subs.forEach(s => { h += `<div class="part-b-row"><span class="text-base font-bold text-slate-500 font-mono">${q}${s}</span><input type="number" inputmode="decimal" min="0" max="${max}" step="0.5" placeholder="-" class="input-bubble w-24 h-12" oninput="handleInput(this, ${max})" data-key="${q}${s}" data-group="${q}"></div>`; });
                 return h + `</div></div>`;
             };
-
-            let html = renderQ('Q8') + renderQ('Q9');
-            html += `<div class="h-2"></div>`;
-            html += renderQ('Q10') + renderQ('Q11');
-            $('#partBContainer').html(html);
+            $('#partBContainer').html(renderQ('Q8') + renderQ('Q9') + `<div class="h-2"></div>` + renderQ('Q10') + renderQ('Q11'));
         }
 
-        function handleInput(input, max) {
-            validateInput(input, max);
-            // Save to local session immediately
+        function handleInput(inp, max) {
+            validateInput(inp, max);
+            if(!session.tempMarks) session.tempMarks = {};
             if(!session.tempMarks[session.activeIA]) session.tempMarks[session.activeIA] = {};
-            session.tempMarks[session.activeIA][input.dataset.key] = input.value;
-            localStorage.setItem('studentSession', JSON.stringify(session));
+            session.tempMarks[session.activeIA][inp.dataset.key] = inp.value;
+            localStorage.setItem('marksPortalSession', JSON.stringify(session));
         }
 
-        function validateInput(input, max, doCalc=true) {
-            let val = parseFloat(input.value);
-            if(val > max) { input.value = max; input.classList.add('error-border'); setTimeout(() => input.classList.remove('error-border'), 500); }
-            if(val < 0) input.value = 0;
-            if(doCalc) updateCalc();
-        }
-
-        function getGroupTotal(group) {
-            let sum = 0;
-            document.querySelectorAll(`input[data-group="${group}"]`).forEach(inp => sum += parseFloat(inp.value) || 0);
-            return sum;
+        function validateInput(inp, max, calc=true) {
+            if(parseFloat(inp.value) > max) { inp.value = max; inp.classList.add('error-border'); setTimeout(()=>inp.classList.remove('error-border'),500); }
+            if(parseFloat(inp.value) < 0) inp.value = 0;
+            if(calc) updateCalc();
         }
 
         function updateCalc() {
             let aVals = [];
-            document.querySelectorAll(`input[data-section="A"]`).forEach(inp => aVals.push({id: inp.dataset.key, val: parseFloat(inp.value) || 0}));
-            aVals.sort((a,b)=>b.val - a.val);
-            let aSum = 0; let topIds = [];
-            for(let i=0; i<5 && i<aVals.length; i++) { aSum += aVals[i].val; topIds.push(aVals[i].id); }
-            
+            document.querySelectorAll(`input[data-section="A"]`).forEach(inp => aVals.push({id: inp.dataset.key, val: parseFloat(inp.value)||0}));
+            aVals.sort((a,b)=>b.val-a.val);
+            let aSum = 0; let top = [];
+            for(let i=0; i<5 && i<aVals.length; i++) { aSum+=aVals[i].val; top.push(aVals[i].id); }
             document.querySelectorAll(`input[data-section="A"]`).forEach(inp => {
-                if(inp.value !== "" && topIds.includes(inp.dataset.key)) {
-                    inp.style.backgroundColor = '#eff6ff'; inp.style.color = '#1d4ed8'; inp.style.borderColor = '#bfdbfe';
-                } else if(inp.value !== "") {
-                    inp.style.backgroundColor = '#f8fafc'; inp.style.color = '#94a3b8'; inp.style.borderColor = '#e2e8f0';
-                } else {
-                    inp.removeAttribute('style');
-                }
+                if(inp.value !== "" && top.includes(inp.dataset.key)) { inp.style.backgroundColor='#eff6ff'; inp.style.color='#1d4ed8'; }
+                else if(inp.value !== "") { inp.style.backgroundColor='#f8fafc'; inp.style.color='#94a3b8'; }
+                else inp.removeAttribute('style');
             });
             $('#partATotal').text(aSum);
-
-            const q8 = getGroupTotal('Q8'), q9 = getGroupTotal('Q9');
-            const q10 = getGroupTotal('Q10'), q11 = getGroupTotal('Q11');
-            const total = aSum + Math.max(q8, q9) + Math.max(q10, q11);
-            $('#runningTotal').text(total);
+            let sum = 0; ['Q8','Q9','Q10','Q11'].forEach(q => { let qSum=0; document.querySelectorAll(`input[data-group="${q}"]`).forEach(i=>qSum+=parseFloat(i.value)||0); });
+            const getS = (q) => { let s=0; document.querySelectorAll(`input[data-group="${q}"]`).forEach(i=>s+=parseFloat(i.value)||0); return s; };
+            const tot = aSum + Math.max(getS('Q8'), getS('Q9')) + Math.max(getS('Q10'), getS('Q11'));
+            $('#runningTotal').text(tot);
         }
 
         function openReview() {
             $('#reviewTotal').text($('#runningTotal').text());
-            const content = $('#reviewContent');
-            content.empty();
-
-            // 1. PART A
-            let aVals = [];
-            document.querySelectorAll(`input[data-section="A"]`).forEach(inp => {
-                aVals.push({ id: inp.dataset.key, val: parseFloat(inp.value) || 0 });
-            });
-            let sortedA = [...aVals].sort((a,b) => b.val - a.val);
-            let topIds = sortedA.slice(0, 5).map(i => i.id);
-            let partATotal = sortedA.slice(0, 5).reduce((sum, item) => sum + item.val, 0);
-
-            let partAHtml = `
-                <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
-                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
-                        <span class="font-bold text-slate-800 text-sm">Part A (Best 5)</span>
-                        <span class="font-bold text-blue-600 text-lg">${partATotal}</span>
-                    </div>
-                    <div class="grid grid-cols-4 gap-2">`;
-            
-            aVals.forEach(item => {
-                const isSelected = topIds.includes(item.id);
-                const bgClass = isSelected ? 'bg-blue-50 border-blue-200' : 'bg-slate-50 border-transparent opacity-60';
-                const textClass = isSelected ? 'text-blue-700 font-bold' : 'text-slate-400';
-                partAHtml += `
-                    <div class="flex flex-col items-center justify-center p-2 rounded-lg border ${bgClass}">
-                        <span class="text-[10px] uppercase text-slate-400">${item.id}</span>
-                        <span class="${textClass} text-sm">${item.val}</span>
-                    </div>`;
-            });
-            partAHtml += `</div></div>`;
-            content.append(partAHtml);
-
-            // 2. PART B (Detailed Breakdown)
-            const renderGroup = (group) => {
-                let details = '';
-                let total = 0;
-                document.querySelectorAll(`input[data-group="${group}"]`).forEach(inp => {
-                    if(inp.value !== "" && inp.value > 0) {
-                        details += `<div class="review-sub-row"><span>${inp.dataset.key}</span><span class="review-sub-val">${inp.value}</span></div>`;
-                        total += parseFloat(inp.value);
-                    }
+            const content = $('#reviewContent'); content.empty();
+            // Part A
+            let aVals = []; document.querySelectorAll(`input[data-section="A"]`).forEach(i=>aVals.push({k:i.dataset.key, v:parseFloat(i.value)||0}));
+            let sortedA = [...aVals].sort((a,b)=>b.v-a.v); let topA = sortedA.slice(0,5).map(x=>x.k);
+            let htmlA = `<div class="bg-white border rounded-xl p-4 shadow-sm mb-4"><div class="flex justify-between font-bold text-sm mb-2 text-slate-800"><span>Part A (Best 5)</span><span>${$('#partATotal').text()}</span></div><div class="grid grid-cols-4 gap-2">`;
+            aVals.forEach(x => { const style = topA.includes(x.k) ? 'bg-blue-50 text-blue-700 font-bold border-blue-200' : 'bg-slate-50 text-slate-400 border-transparent'; htmlA += `<div class="text-center p-2 rounded border ${style}"><div class="text-[10px] uppercase">${x.k}</div><div>${x.v}</div></div>`; });
+            content.append(htmlA + `</div></div>`);
+            // Part B
+            const getQDetails = (q) => {
+                let rows = ''; let tot = 0;
+                document.querySelectorAll(`input[data-group="${q}"]`).forEach(i => {
+                    if(i.value > 0) { rows+=`<div class="review-sub-row"><span>${i.dataset.key}</span><span class="review-sub-val">${i.value}</span></div>`; tot+=parseFloat(i.value); }
                 });
-                return { total, details: details || '<div class="text-xs text-slate-300 italic">No marks entered</div>' };
+                return { h: rows || '<div class="text-xs italic text-slate-300">No entry</div>', t: tot };
             };
-
-            const q8 = renderGroup('Q8'), q9 = renderGroup('Q9');
-            const q10 = renderGroup('Q10'), q11 = renderGroup('Q11');
-            const m1Best = Math.max(q8.total, q9.total);
-            const m2Best = Math.max(q10.total, q11.total);
-
-            const renderSet = (title, bestScore, setA, dataA, setB, dataB) => `
-                <div class="bg-white rounded-xl border border-slate-200 p-4 shadow-sm mb-4">
-                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
-                        <span class="font-bold text-slate-800 text-sm">${title}</span>
-                        <span class="font-bold text-blue-600 text-lg">${bestScore}</span>
-                    </div>
-                    
-                    <!-- Group A -->
-                    <div class="review-group">
-                        <div class="review-header">
-                            <span>${setA}</span>
-                            <span>${dataA.total} ${dataA.total >= dataB.total && dataA.total > 0 ? '<span class="review-best-badge">BEST</span>' : ''}</span>
-                        </div>
-                        ${dataA.details}
-                    </div>
-
-                    <!-- Group B -->
-                    <div class="review-group !mb-0">
-                        <div class="review-header">
-                            <span>${setB}</span>
-                            <span>${dataB.total} ${dataB.total > dataA.total ? '<span class="review-best-badge">BEST</span>' : ''}</span>
-                        </div>
-                        ${dataB.details}
-                    </div>
-                </div>`;
-
-            content.append(renderSet("Set 1 Breakdown", m1Best, "Q8", q8, "Q9", q9));
-            content.append(renderSet("Set 2 Breakdown", m2Best, "Q10", q10, "Q11", q11));
-
-            $('#viewEntry').hide();
-            $('#viewReview').show().addClass('fade-enter-active');
-            window.scrollTo(0,0);
+            const q8=getQDetails('Q8'), q9=getQDetails('Q9'), q10=getQDetails('Q10'), q11=getQDetails('Q11');
+            const renderSet = (t, best, qa, da, qb, db) => `
+                <div class="bg-white rounded-xl border p-4 shadow-sm mb-4">
+                    <div class="flex justify-between font-bold text-sm mb-3 border-b pb-2"><span>${t}</span><span class="text-blue-600 text-lg">${best}</span></div>
+                    <div class="space-y-3">
+                        <div class="review-group"><div class="review-header"><span>${qa}</span><span>${da.t} ${da.t>=db.t && da.t>0?'<span class="review-best-badge">BEST</span>':''}</span></div>${da.h}</div>
+                        <div class="review-group !mb-0"><div class="review-header"><span>${qb}</span><span>${db.t} ${db.t>da.t?'<span class="review-best-badge">BEST</span>':''}</span></div>${db.h}</div>
+                    </div></div>`;
+            content.append(renderSet("Set 1", Math.max(q8.t, q9.t), "Q8", q8, "Q9", q9));
+            content.append(renderSet("Set 2", Math.max(q10.t, q11.t), "Q10", q10, "Q11", q11));
+            $('#viewEntry').hide(); $('#viewReview').show(); window.scrollTo(0,0);
         }
 
-        function closeReview() { 
-            $('#viewReview').hide(); 
-            $('#viewEntry').show().addClass('fade-enter-active');
-            window.scrollTo(0,document.body.scrollHeight);
-        }
+        function closeReview() { $('#viewReview').hide(); $('#viewEntry').show(); }
 
         async function submitSplitUp() {
-            const btn = $('#btnFinalSubmit');
-            btn.html('<i class="fas fa-spinner fa-spin"></i> Saving...').prop('disabled', true);
-
-            const payload = {
-                action: 'submit',
-                config: { dept: session.dept, ia: session.activeIA },
-                student: { usn: session.usn, name: session.name },
-                calculatedTotal: $('#runningTotal').text(),
-                marks: {}
-            };
-
-            document.querySelectorAll('input[data-key]').forEach(inp => {
-                payload.marks[inp.dataset.key] = inp.value;
-            });
-
+            $('#btnFinalSubmit').text('Saving...').prop('disabled', true);
+            const payload = { action: 'submit', config: { dept: session.dept, ia: session.activeIA }, student: { usn: session.usn, name: session.name }, calculatedTotal: $('#runningTotal').text(), marks: {} };
+            document.querySelectorAll('input[data-key]').forEach(i => payload.marks[i.dataset.key] = i.value);
             try {
-                await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                alert("Saved Successfully!");
-                
-                // Update Session Data
-                if(!session.splitUpData) session.splitUpData = {};
-                session.splitUpData[session.activeIA] = payload.marks;
-                // Clear Temp Marks
+                await fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
+                alert("Saved!");
+                if(!session.splitUpData) session.splitUpData={}; session.splitUpData[session.activeIA]=payload.marks;
                 if(session.tempMarks[session.activeIA]) delete session.tempMarks[session.activeIA];
-                localStorage.setItem('studentSession', JSON.stringify(session));
-                
-                updateDashButtons();
-                $('#viewReview').hide();
-                showDashboard();
-            } catch(e) {
-                alert("Error saving.");
-            } finally {
-                btn.text('Confirm & Save').prop('disabled', false);
-            }
+                localStorage.setItem('marksPortalSession', JSON.stringify(session));
+                if(session.role === 'faculty') backToFaculty(); else { updateDashButtons(); closeReview(); showDashboard(); }
+            } catch(e) { alert("Error"); } finally { $('#btnFinalSubmit').text('Confirm & Save').prop('disabled', false); }
         }
-        function logout() { localStorage.removeItem('studentSession'); location.reload(); }
+        function logout() { localStorage.removeItem('marksPortalSession'); location.reload(); }
     </script>
 </body>
 </html>
